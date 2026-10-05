@@ -1,0 +1,39 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de Python: colecciones, control de flujo, funciones, archivos y excepciones."><title>Python | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Programación y automatización</p><h1>Python</h1><p>Sintaxis expresiva, colecciones, funciones y herramientas para scripts y aplicaciones mantenibles.</p><div class="chips"><span>Colecciones</span><span>Funciones</span><span>Archivos</span><span>Excepciones</span></div></section><nav class="toc"><a href="#datos">Datos</a><a href="#flujo">Control</a><a href="#funciones">Funciones</a><a href="#archivos">Archivos</a><a href="#entornos">Entornos</a></nav><section id="datos" class="guide-section"><h2>Valores y colecciones</h2><pre><code>nombre = "Ada"
+edad = 36
+lenguajes = ["Python", "JavaScript"]
+perfil = {"nombre": nombre, "activo": True}
+etiquetas = {"backend", "automatización"}
+coordenada = (4, 8)
+
+ultimo = lenguajes[-1]
+seguro = perfil.get("rol", "usuario")</code></pre><div class="grid"><article><h3>Lista</h3><p>Ordenada, mutable y adecuada para secuencias.</p></article><article><h3>Diccionario</h3><p>Relaciona claves únicas con valores.</p></article><article><h3>Conjunto</h3><p>Elimina duplicados y facilita operaciones de pertenencia.</p></article></div></section><section id="flujo" class="guide-section"><h2>Control de flujo</h2><pre><code>for indice, lenguaje in enumerate(lenguajes, start=1):
+    print(indice, lenguaje)
+
+aprobados = [nota for nota in [3.2, 4.5, 2.9] if nota &gt;= 3]
+
+if edad &gt;= 18:
+    mensaje = "Mayor de edad"
+elif edad &gt;= 13:
+    mensaje = "Adolescente"
+else:
+    mensaje = "Menor"</code></pre></section><section id="funciones" class="guide-section"><h2>Funciones y módulos</h2><pre><code>def calcular_total(precios: list[float], impuesto: float = 0.19) -&gt; float:
+    """Devuelve el total con impuesto."""
+    return sum(precios) * (1 + impuesto)
+
+if __name__ == "__main__":
+    print(calcular_total([10_000, 25_000]))</code></pre><p>Las anotaciones documentan expectativas y ayudan a analizadores, pero no validan por sí solas en tiempo de ejecución.</p></section><section id="archivos" class="guide-section"><h2>Archivos y errores</h2><pre><code>from pathlib import Path
+import json
+
+ruta = Path("datos.json")
+try:
+    datos = json.loads(ruta.read_text(encoding="utf-8"))
+except FileNotFoundError:
+    datos = []
+except json.JSONDecodeError as error:
+    raise ValueError("El JSON no es válido") from error</code></pre><ul class="checklist"><li>Usa gestores de contexto o métodos de <code>pathlib</code> para administrar recursos.</li><li>Captura excepciones concretas, no un <code>except</code> vacío.</li><li>Agrega contexto al relanzar un error con <code>raise ... from ...</code>.</li><li>Registra información útil sin exponer secretos.</li></ul></section><section id="entornos" class="guide-section"><h2>Entornos y paquetes</h2><pre><code>python -m venv .venv
+# Linux/macOS
+source .venv/bin/activate
+# PowerShell
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install requests</code></pre><div class="tip"><strong>Práctica:</strong> fija dependencias del proyecto y nunca subas el directorio <code>.venv</code> al repositorio.</div></section><section class="resources"><h2>Documentación oficial</h2><a href="https://docs.python.org/3/tutorial/" target="_blank" rel="noreferrer">Tutorial oficial de Python</a><a href="https://docs.python.org/3/library/" target="_blank" rel="noreferrer">Biblioteca estándar</a></section></main><footer>CodeSheets · Referencia Python original y práctica</footer></body></html>

@@ -1,0 +1,36 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de JavaScript con funciones, colecciones, DOM, eventos, módulos y fetch."><title>JavaScript | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Programación web</p><h1>JavaScript</h1><p>Una referencia moderna para trabajar con datos, funciones, interfaces y operaciones asíncronas.</p><div class="chips"><span>ES Modules</span><span>DOM</span><span>Eventos</span><span>Async</span></div></section><nav class="toc"><a href="#datos">Datos</a><a href="#funciones">Funciones</a><a href="#colecciones">Colecciones</a><a href="#dom">DOM</a><a href="#async">Asincronía</a></nav><section id="datos" class="guide-section"><h2>Variables y tipos</h2><p>Usa <code>const</code> por defecto y <code>let</code> cuando debas reasignar. JavaScript incluye valores primitivos y objetos; comprueba casos nulos explícitamente.</p><pre><code>const nombre = "Ada";
+let intentos = 0;
+const activo = true;
+const perfil = { nombre, activo };
+
+const etiqueta = perfil?.nombre ?? "Sin nombre";</code></pre></section><section id="funciones" class="guide-section"><h2>Funciones</h2><p>Las funciones encapsulan comportamiento. Mantén entradas y salidas claras; evita depender innecesariamente del estado global.</p><pre><code>function calcularTotal(precios, impuesto = 0.19) {
+  const subtotal = precios.reduce((suma, precio) =&gt; suma + precio, 0);
+  return subtotal * (1 + impuesto);
+}
+
+const duplicar = numero =&gt; numero * 2;</code></pre><div class="tip"><strong>Consejo:</strong> una función pequeña con un nombre específico suele ser más sencilla de probar y reutilizar.</div></section><section id="colecciones" class="guide-section"><h2>Arrays y objetos</h2><div class="grid"><article><h3>Transformar</h3><p><code>map()</code> crea una colección con cada valor transformado.</p></article><article><h3>Filtrar</h3><p><code>filter()</code> conserva elementos que cumplen una condición.</p></article><article><h3>Acumular</h3><p><code>reduce()</code> combina la colección en un resultado.</p></article></div><pre><code>const tareas = [
+  { titulo: "Diseñar", lista: true },
+  { titulo: "Probar", lista: false }
+];
+const pendientes = tareas.filter(tarea =&gt; !tarea.lista);
+const titulos = tareas.map(({ titulo }) =&gt; titulo);</code></pre></section><section id="dom" class="guide-section"><h2>DOM y eventos</h2><p>Selecciona el elemento, escucha el evento y modifica solo lo necesario. Usa delegación cuando muchos elementos comparten comportamiento.</p><pre><code>const lista = document.querySelector("#tareas");
+
+lista.addEventListener("click", evento =&gt; {
+  const boton = evento.target.closest("button[data-id]");
+  if (!boton) return;
+  boton.closest("li")?.remove();
+});</code></pre></section><section id="async" class="guide-section"><h2>Módulos y asincronía</h2><pre><code>// api.js
+export async function obtenerUsuarios() {
+  const respuesta = await fetch("/api/usuarios");
+  if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+  return respuesta.json();
+}
+
+// app.js
+import { obtenerUsuarios } from "./api.js";
+try {
+  const usuarios = await obtenerUsuarios();
+  console.table(usuarios);
+} catch (error) {
+  console.error("No fue posible cargar", error);
+}</code></pre><ul class="checklist"><li>Comprueba <code>response.ok</code>; <code>fetch</code> no rechaza automáticamente todos los errores HTTP.</li><li>Usa <code>try/catch</code> donde puedas responder o enriquecer el error.</li><li>Sirve módulos desde HTTP y declara <code>type="module"</code> en el script.</li></ul></section><section class="resources"><h2>Documentación oficial</h2><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Guide" target="_blank" rel="noreferrer">MDN: Guía JavaScript</a><a href="https://tc39.es/ecma262/" target="_blank" rel="noreferrer">Especificación ECMAScript</a></section></main><footer>CodeSheets · Referencia JavaScript original y práctica</footer></body></html>

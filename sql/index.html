@@ -1,0 +1,35 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de SQL: consultas, filtros, agregaciones, joins y modificaciones seguras."><title>SQL | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Bases de datos relacionales</p><h1>SQL</h1><p>Consulta, combina y modifica información con sentencias legibles y operaciones seguras.</p><div class="chips"><span>SELECT</span><span>JOIN</span><span>GROUP BY</span><span>Transacciones</span></div></section><nav class="toc"><a href="#select">Consultas</a><a href="#agregar">Agregación</a><a href="#joins">Joins</a><a href="#cambios">Cambios</a><a href="#diseno">Diseño</a></nav><section id="select" class="guide-section"><h2>SELECT y filtros</h2><pre><code>SELECT id, nombre, precio
+FROM productos
+WHERE activo = TRUE
+  AND precio BETWEEN 10000 AND 50000
+ORDER BY precio DESC
+LIMIT 20;</code></pre><ul class="checklist"><li>Selecciona solo las columnas necesarias.</li><li>Usa <code>IS NULL</code>, no <code>= NULL</code>.</li><li>Combina condiciones con paréntesis cuando mezcles <code>AND</code> y <code>OR</code>.</li><li>Parametriza valores desde la aplicación; nunca concatentes entradas del usuario.</li></ul></section><section id="agregar" class="guide-section"><h2>Agregaciones</h2><pre><code>SELECT categoria_id,
+       COUNT(*) AS cantidad,
+       AVG(precio) AS promedio,
+       SUM(precio * existencias) AS inventario
+FROM productos
+WHERE activo = TRUE
+GROUP BY categoria_id
+HAVING COUNT(*) &gt;= 5
+ORDER BY inventario DESC;</code></pre><p><code>WHERE</code> filtra filas antes de agrupar; <code>HAVING</code> filtra los grupos resultantes.</p></section><section id="joins" class="guide-section"><h2>JOIN</h2><pre><code>SELECT p.id, p.nombre, c.nombre AS categoria
+FROM productos AS p
+INNER JOIN categorias AS c ON c.id = p.categoria_id;
+
+SELECT c.nombre, COUNT(p.id) AS productos
+FROM categorias AS c
+LEFT JOIN productos AS p ON p.categoria_id = c.id
+GROUP BY c.id, c.nombre;</code></pre><div class="grid"><article><h3>INNER JOIN</h3><p>Devuelve coincidencias presentes en ambos lados.</p></article><article><h3>LEFT JOIN</h3><p>Conserva todas las filas de la tabla izquierda.</p></article><article><h3>Clave clara</h3><p>Une columnas relacionadas e indexadas, no textos ambiguos.</p></article></div></section><section id="cambios" class="guide-section"><h2>Insertar y modificar</h2><pre><code>BEGIN;
+
+INSERT INTO productos (nombre, precio, activo)
+VALUES ('Guía SQL', 18000, TRUE)
+RETURNING id;
+
+UPDATE productos
+SET precio = precio * 1.05
+WHERE activo = TRUE AND categoria_id = 3;
+
+COMMIT;</code></pre><div class="tip"><strong>Seguridad:</strong> ejecuta primero el mismo <code>WHERE</code> con un <code>SELECT</code> y usa transacciones para cambios relacionados.</div></section><section id="diseno" class="guide-section"><h2>Diseño e índices</h2><ul class="checklist"><li>Define claves primarias, foráneas, restricciones y valores nulos conscientemente.</li><li>Normaliza para evitar duplicación; desnormaliza solo con evidencia y medición.</li><li>Crea índices para búsquedas y uniones frecuentes, considerando el costo de escritura.</li><li>Analiza el plan de ejecución antes de optimizar por intuición.</li></ul><pre><code>CREATE INDEX idx_productos_categoria_activo
+ON productos (categoria_id, activo);
+
+ALTER TABLE productos
+ADD CONSTRAINT precio_no_negativo CHECK (precio &gt;= 0);</code></pre></section><section class="resources"><h2>Documentación oficial</h2><a href="https://www.postgresql.org/docs/current/tutorial-sql.html" target="_blank" rel="noreferrer">PostgreSQL: lenguaje SQL</a><a href="https://dev.mysql.com/doc/refman/8.4/en/sql-statements.html" target="_blank" rel="noreferrer">MySQL: sentencias SQL</a></section></main><footer>CodeSheets · Referencia SQL original y práctica</footer></body></html>

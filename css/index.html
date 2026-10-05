@@ -1,0 +1,32 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de CSS: cascada, caja, Flexbox, Grid y diseño adaptable."><title>CSS | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Diseño web</p><h1>CSS</h1><p>Domina la cascada, los layouts modernos y las interfaces adaptables con patrones fáciles de reutilizar.</p><div class="chips"><span>Cascada</span><span>Flexbox</span><span>Grid</span><span>Responsive</span></div></section><nav class="toc"><a href="#base">Base</a><a href="#caja">Modelo de caja</a><a href="#flex">Flexbox</a><a href="#grid">Grid</a><a href="#responsive">Responsive</a></nav><section id="base" class="guide-section"><h2>Cascada y selectores</h2><p>La regla ganadora depende del origen, la importancia, la especificidad y el orden. Prefiere clases de baja especificidad y evita <code>!important</code> como solución habitual.</p><pre><code>:root {
+  --color-acento: #48e0af;
+  --espacio: 1rem;
+}
+
+.tarjeta { padding: var(--espacio); }
+.tarjeta__titulo { color: var(--color-acento); }
+.tarjeta:hover { transform: translateY(-2px); }</code></pre><div class="tip"><strong>Patrón:</strong> utiliza propiedades personalizadas para colores, espacios, tipografía y radios; facilitan cambios globales.</div></section><section id="caja" class="guide-section"><h2>Modelo de caja</h2><p>Cada elemento combina contenido, relleno, borde y margen. El ajuste global evita cálculos inesperados de ancho.</p><pre><code>*, *::before, *::after { box-sizing: border-box; }
+
+.panel {
+  width: min(100%, 60rem);
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid #29415e;
+  border-radius: 1rem;
+}</code></pre></section><section id="flex" class="guide-section"><h2>Flexbox</h2><div class="grid"><article><h3>Eje principal</h3><p><code>justify-content</code> distribuye elementos sobre el eje principal.</p></article><article><h3>Eje transversal</h3><p><code>align-items</code> alinea los elementos en el eje perpendicular.</p></article><article><h3>Reparto</h3><p><code>flex</code>, <code>gap</code> y <code>flex-wrap</code> controlan tamaño y salto.</p></article></div><pre><code>.acciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+}</code></pre></section><section id="grid" class="guide-section"><h2>Grid</h2><p>Grid organiza filas y columnas. <code>auto-fit</code> y <code>minmax()</code> permiten cuadrículas fluidas sin muchas consultas de medios.</p><pre><code>.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.destacada { grid-column: span 2; }</code></pre></section><section id="responsive" class="guide-section"><h2>Diseño adaptable</h2><ul class="checklist"><li>Diseña primero para pantallas pequeñas y amplía cuando haya espacio.</li><li>Usa unidades relativas, <code>min()</code>, <code>max()</code> y <code>clamp()</code>.</li><li>Evita alturas fijas para contenido textual.</li><li>Respeta <code>prefers-reduced-motion</code> al crear animaciones.</li></ul><pre><code>@media (min-width: 48rem) {
+  .layout { grid-template-columns: 2fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto; transition: none; }
+}</code></pre></section><section class="resources"><h2>Documentación oficial</h2><a href="https://developer.mozilla.org/es/docs/Web/CSS" target="_blank" rel="noreferrer">MDN: CSS</a><a href="https://www.w3.org/Style/CSS/" target="_blank" rel="noreferrer">W3C: CSS</a></section></main><footer>CodeSheets · Referencia CSS original y práctica</footer></body></html>

@@ -1,0 +1,42 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de Bash y PowerShell para archivos, pipes, variables y scripts."><title>Bash y PowerShell | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Terminal y automatización</p><h1>Bash y PowerShell</h1><p>Opera archivos, encadena comandos y convierte tareas repetitivas en scripts reproducibles.</p><div class="chips"><span>Navegación</span><span>Pipes</span><span>Variables</span><span>Scripts</span></div></section><nav class="toc"><a href="#navegar">Navegar</a><a href="#archivos">Archivos</a><a href="#pipes">Pipes</a><a href="#variables">Variables</a><a href="#scripts">Scripts</a></nav><section id="navegar" class="guide-section"><h2>Navegación</h2><div class="split"><article><h3>Bash</h3><pre><code>pwd
+ls -la
+cd ~/proyectos
+find . -type f -name "*.md"</code></pre></article><article><h3>PowerShell</h3><pre><code>Get-Location
+Get-ChildItem -Force
+Set-Location ~/proyectos
+Get-ChildItem -Recurse -Filter *.md</code></pre></article></div></section><section id="archivos" class="guide-section"><h2>Archivos y directorios</h2><div class="split"><article><h3>Bash</h3><pre><code>mkdir -p salida/reportes
+cp archivo.txt copia.txt
+mv copia.txt salida/
+rm archivo-temporal.txt
+cat datos.txt</code></pre></article><article><h3>PowerShell</h3><pre><code>New-Item salida/reportes -ItemType Directory -Force
+Copy-Item archivo.txt copia.txt
+Move-Item copia.txt salida/
+Remove-Item archivo-temporal.txt
+Get-Content datos.txt</code></pre></article></div><p class="warning"><strong>Cuidado:</strong> verifica rutas antes de borrar, especialmente al usar recursión, comodines o privilegios elevados.</p></section><section id="pipes" class="guide-section"><h2>Pipes y filtros</h2><p>Bash transporta principalmente texto; PowerShell transporta objetos con propiedades y métodos.</p><div class="split"><article><h3>Bash</h3><pre><code>grep -R "TODO" src/ | sort | uniq
+cat acceso.log | awk '{print $1}' | sort | uniq -c</code></pre></article><article><h3>PowerShell</h3><pre><code>Get-ChildItem src -Recurse |
+  Select-String "TODO"
+
+Get-Process |
+  Where-Object CPU -gt 10 |
+  Sort-Object CPU -Descending</code></pre></article></div></section><section id="variables" class="guide-section"><h2>Variables y condiciones</h2><div class="split"><article><h3>Bash</h3><pre><code>entorno="produccion"
+if [[ -f ".env" ]]; then
+  echo "Configuración encontrada"
+fi
+for archivo in *.md; do
+  echo "$archivo"
+done</code></pre></article><article><h3>PowerShell</h3><pre><code>$entorno = "produccion"
+if (Test-Path .env) {
+  Write-Host "Configuración encontrada"
+}
+Get-ChildItem *.md | ForEach-Object {
+  $_.Name
+}</code></pre></article></div></section><section id="scripts" class="guide-section"><h2>Scripts robustos</h2><div class="split"><article><h3>Bash</h3><pre><code>#!/usr/bin/env bash
+set -euo pipefail
+
+origen="${1:-datos}"
+[[ -d "$origen" ]] || { echo "No existe" &gt;&amp;2; exit 1; }
+tar -czf respaldo.tar.gz "$origen"</code></pre></article><article><h3>PowerShell</h3><pre><code>param([string]$Origen = "datos")
+$ErrorActionPreference = "Stop"
+
+if (-not (Test-Path $Origen)) { throw "No existe" }
+Compress-Archive -Path $Origen -DestinationPath respaldo.zip</code></pre></article></div><ul class="checklist"><li>Entrecomilla variables que representen rutas.</li><li>Devuelve códigos de salida útiles y mensajes por el canal apropiado.</li><li>No guardes credenciales dentro del script.</li><li>Prueba primero con datos temporales y operaciones no destructivas.</li></ul></section><section class="resources"><h2>Documentación oficial</h2><a href="https://www.gnu.org/software/bash/manual/" target="_blank" rel="noreferrer">GNU Bash Manual</a><a href="https://learn.microsoft.com/powershell/" target="_blank" rel="noreferrer">Microsoft Learn: PowerShell</a></section></main><footer>CodeSheets · Referencia de terminal original y práctica</footer></body></html>

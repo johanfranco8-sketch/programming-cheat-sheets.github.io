@@ -1,0 +1,41 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de Java: clases, colecciones, interfaces, streams y excepciones."><title>Java | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Programación orientada a objetos</p><h1>Java</h1><p>Fundamentos para modelar dominios con clases, interfaces, colecciones y manejo explícito de errores.</p><div class="chips"><span>Clases</span><span>Interfaces</span><span>Colecciones</span><span>Streams</span></div></section><nav class="toc"><a href="#base">Base</a><a href="#clases">Clases</a><a href="#interfaces">Interfaces</a><a href="#colecciones">Colecciones</a><a href="#errores">Errores</a></nav><section id="base" class="guide-section"><h2>Programa mínimo</h2><pre><code>public class Main {
+    public static void main(String[] args) {
+        String nombre = "CodeSheets";
+        int guias = 10;
+        System.out.printf("%s tiene %d guías%n", nombre, guias);
+    }
+}</code></pre><p>Los tipos primitivos almacenan valores simples; las clases representan objetos. Usa nombres de clase en PascalCase y métodos o variables en camelCase.</p></section><section id="clases" class="guide-section"><h2>Clases y objetos</h2><pre><code>public final class Producto {
+    private final String nombre;
+    private final long precio;
+
+    public Producto(String nombre, long precio) {
+        if (precio &lt; 0) throw new IllegalArgumentException("Precio inválido");
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public String nombre() { return nombre; }
+    public long precio() { return precio; }
+}</code></pre><div class="tip"><strong>Encapsulación:</strong> conserva las invariantes dentro del constructor y expón el mínimo estado mutable.</div></section><section id="interfaces" class="guide-section"><h2>Interfaces y polimorfismo</h2><pre><code>interface Notificador {
+    void enviar(String destinatario, String mensaje);
+}
+
+class NotificadorEmail implements Notificador {
+    @Override
+    public void enviar(String destinatario, String mensaje) {
+        System.out.println("Email para " + destinatario);
+    }
+}</code></pre><p>Programa contra abstracciones cuando existan varias implementaciones o necesites sustituir colaboradores durante pruebas.</p></section><section id="colecciones" class="guide-section"><h2>Colecciones y streams</h2><pre><code>List&lt;Producto&gt; productos = List.of(
+    new Producto("Guía", 15000),
+    new Producto("Pack", 35000)
+);
+
+List&lt;String&gt; nombres = productos.stream()
+    .filter(p -&gt; p.precio() &gt; 20000)
+    .map(Producto::nombre)
+    .toList();</code></pre><div class="grid"><article><h3>List</h3><p>Secuencia ordenada que permite duplicados.</p></article><article><h3>Set</h3><p>Conjunto de elementos únicos.</p></article><article><h3>Map</h3><p>Asocia claves con valores.</p></article></div></section><section id="errores" class="guide-section"><h2>Excepciones y recursos</h2><pre><code>try (var lector = Files.newBufferedReader(Path.of("datos.txt"))) {
+    String primeraLinea = lector.readLine();
+    System.out.println(primeraLinea);
+} catch (IOException error) {
+    System.err.println("No se pudo leer: " + error.getMessage());
+}</code></pre><ul class="checklist"><li>Usa <code>try-with-resources</code> para cerrar archivos, conexiones y streams.</li><li>No ocultes excepciones; resuélvelas, tradúcelas o propágalas.</li><li>Prefiere objetos inmutables cuando sea posible.</li><li>Prueba comportamiento público y casos límite.</li></ul></section><section class="resources"><h2>Documentación oficial</h2><a href="https://dev.java/learn/" target="_blank" rel="noreferrer">Dev.java: Learn Java</a><a href="https://docs.oracle.com/en/java/" target="_blank" rel="noreferrer">Oracle Java Documentation</a></section></main><footer>CodeSheets · Referencia Java original y práctica</footer></body></html>

@@ -1,0 +1,48 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica para organizar proyectos JavaScript con DOM, módulos, estado y localStorage."><title>Proyectos JavaScript | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Práctica frontend</p><h1>Proyectos JavaScript</h1><p>Patrones simples para organizar una aplicación del navegador, administrar estado y persistir datos.</p><div class="chips"><span>Estructura</span><span>DOM</span><span>Estado</span><span>localStorage</span></div></section><nav class="toc"><a href="#estructura">Estructura</a><a href="#estado">Estado</a><a href="#dom">Render</a><a href="#storage">Persistencia</a><a href="#debug">Depuración</a></nav><section id="estructura" class="guide-section"><h2>Estructura sugerida</h2><pre><code>mi-proyecto/
+├── index.html
+├── assets/
+│   └── styles.css
+└── src/
+    ├── app.js
+    ├── estado.js
+    ├── ui.js
+    └── almacenamiento.js</code></pre><p>Separa acceso al DOM, reglas de negocio y persistencia. Los módulos pequeños reducen dependencias implícitas y facilitan pruebas.</p><pre><code>&lt;script type="module" src="./src/app.js"&gt;&lt;/script&gt;</code></pre></section><section id="estado" class="guide-section"><h2>Estado predecible</h2><pre><code>export const estado = {
+  tareas: [],
+  filtro: "todas"
+};
+
+export function agregarTarea(texto) {
+  const titulo = texto.trim();
+  if (!titulo) return false;
+  estado.tareas.push({ id: crypto.randomUUID(), titulo, lista: false });
+  return true;
+}</code></pre><div class="tip"><strong>Flujo recomendado:</strong> evento → validación → actualización del estado → persistencia → render.</div></section><section id="dom" class="guide-section"><h2>Render seguro del DOM</h2><pre><code>export function crearTarea(tarea) {
+  const item = document.createElement("li");
+  const texto = document.createElement("span");
+  texto.textContent = tarea.titulo;
+
+  const boton = document.createElement("button");
+  boton.type = "button";
+  boton.dataset.id = tarea.id;
+  boton.textContent = "Completar";
+
+  item.append(texto, boton);
+  return item;
+}</code></pre><p>Para texto aportado por usuarios, usa <code>textContent</code> en vez de construir HTML con cadenas.</p></section><section id="storage" class="guide-section"><h2>localStorage</h2><pre><code>const CLAVE = "codesheets-tareas";
+
+export function guardar(tareas) {
+  localStorage.setItem(CLAVE, JSON.stringify(tareas));
+}
+
+export function cargar() {
+  try {
+    const valor = JSON.parse(localStorage.getItem(CLAVE));
+    return Array.isArray(valor) ? valor : [];
+  } catch {
+    return [];
+  }
+}</code></pre><ul class="checklist"><li>Almacena datos serializables, pequeños y no sensibles.</li><li>Valida la estructura recuperada; el almacenamiento puede estar vacío o alterado.</li><li>Versiona el esquema si esperas cambios futuros.</li><li>No uses localStorage para contraseñas, tokens críticos o información privada.</li></ul></section><section id="debug" class="guide-section"><h2>Depuración y calidad</h2><div class="grid"><article><h3>Consola</h3><p>Usa <code>console.table</code>, grupos y trazas temporales con intención.</p></article><article><h3>Breakpoints</h3><p>Detén la ejecución e inspecciona alcance, pila y valores.</p></article><article><h3>Pruebas</h3><p>Extrae funciones puras y prueba entradas normales, vacías y erróneas.</p></article></div><pre><code>function filtrarTareas(tareas, filtro) {
+  if (filtro === "pendientes") return tareas.filter(t =&gt; !t.lista);
+  if (filtro === "listas") return tareas.filter(t =&gt; t.lista);
+  return tareas;
+}</code></pre></section><section class="resources"><h2>Documentación oficial</h2><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Guide" target="_blank" rel="noreferrer">MDN: Guía JavaScript</a><a href="https://developer.mozilla.org/es/docs/Web/API/Window/localStorage" target="_blank" rel="noreferrer">MDN: localStorage</a></section></main><footer>CodeSheets · Guía original para proyectos JavaScript</footer></body></html>

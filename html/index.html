@@ -1,0 +1,29 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de HTML con estructura, semántica, formularios y accesibilidad."><title>HTML | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Desarrollo web</p><h1>HTML</h1><p>Referencia práctica para crear documentos claros, semánticos, accesibles y fáciles de mantener.</p><div class="chips"><span>Estructura</span><span>Semántica</span><span>Formularios</span><span>Accesibilidad</span></div></section><nav class="toc" aria-label="Contenido"><a href="#base">Documento base</a><a href="#semantica">Semántica</a><a href="#contenido">Contenido</a><a href="#formularios">Formularios</a><a href="#accesibilidad">Accesibilidad</a></nav><section id="base" class="guide-section"><h2>Documento base</h2><p>Todo documento comienza con el tipo HTML5, el idioma, los metadatos esenciales y un cuerpo visible.</p><pre><code>&lt;!doctype html&gt;
+&lt;html lang="es"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+  &lt;title&gt;Mi página&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Contenido principal&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><div class="tip"><strong>Consejo:</strong> usa un solo <code>h1</code> descriptivo y conserva una jerarquía de encabezados lógica.</div></section><section id="semantica" class="guide-section"><h2>Semántica</h2><div class="grid"><article><h3>Regiones</h3><p><code>header</code>, <code>nav</code>, <code>main</code>, <code>aside</code> y <code>footer</code> describen la función de cada bloque.</p></article><article><h3>Contenido independiente</h3><p><code>article</code> representa una pieza reutilizable; <code>section</code> agrupa contenido con un tema y encabezado.</p></article><article><h3>Texto</h3><p>Usa <code>strong</code> para importancia, <code>em</code> para énfasis y <code>time</code> para fechas legibles por máquinas.</p></article></div><pre><code>&lt;main&gt;
+  &lt;article&gt;
+    &lt;header&gt;&lt;h2&gt;Título&lt;/h2&gt;&lt;/header&gt;
+    &lt;p&gt;Contenido del artículo.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;</code></pre></section><section id="contenido" class="guide-section"><h2>Enlaces, imágenes y tablas</h2><ul class="checklist"><li>Enlaces: escribe textos que expliquen el destino; evita “clic aquí”.</li><li>Imágenes: añade <code>alt</code> útil o déjalo vacío si la imagen es decorativa.</li><li>Tablas: reserva su uso para datos y agrega <code>caption</code>, encabezados y alcance.</li><li>Listas: usa <code>ul</code> cuando el orden no importe y <code>ol</code> para secuencias.</li></ul><pre><code>&lt;figure&gt;
+  &lt;img src="grafico.webp" alt="Ventas mensuales de enero a junio"&gt;
+  &lt;figcaption&gt;Crecimiento durante el semestre.&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre></section><section id="formularios" class="guide-section"><h2>Formularios</h2><p>Relaciona cada control con una etiqueta, selecciona el tipo de entrada correcto y valida tanto en el cliente como en el servidor.</p><pre><code>&lt;form action="/registro" method="post"&gt;
+  &lt;label for="email"&gt;Correo&lt;/label&gt;
+  &lt;input id="email" name="email" type="email" autocomplete="email" required&gt;
+
+  &lt;label for="rol"&gt;Rol&lt;/label&gt;
+  &lt;select id="rol" name="rol"&gt;
+    &lt;option value="dev"&gt;Desarrollo&lt;/option&gt;
+    &lt;option value="design"&gt;Diseño&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;button type="submit"&gt;Crear cuenta&lt;/button&gt;
+&lt;/form&gt;</code></pre></section><section id="accesibilidad" class="guide-section"><h2>Accesibilidad y calidad</h2><ul class="checklist"><li>Declara el idioma y permite navegar con teclado.</li><li>No uses un <code>div</code> como botón; aprovecha los elementos nativos.</li><li>Mantén títulos únicos, nombres accesibles y mensajes de error comprensibles.</li><li>Valida el marcado y prueba con zoom, teclado y lector de pantalla.</li></ul></section><section class="resources"><h2>Documentación oficial</h2><a href="https://developer.mozilla.org/es/docs/Web/HTML" target="_blank" rel="noreferrer">MDN: HTML</a><a href="https://html.spec.whatwg.org/" target="_blank" rel="noreferrer">Estándar HTML Living Standard</a></section></main><footer>CodeSheets · Referencia HTML original y práctica</footer></body></html>

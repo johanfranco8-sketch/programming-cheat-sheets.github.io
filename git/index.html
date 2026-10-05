@@ -1,0 +1,24 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de Git: commits, ramas, remotos, merge, rebase y recuperación."><title>Git | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">Control de versiones</p><h1>Git</h1><p>Comandos y flujos de trabajo para registrar cambios, colaborar y recuperar versiones con confianza.</p><div class="chips"><span>Commits</span><span>Ramas</span><span>Remotos</span><span>Recuperación</span></div></section><nav class="toc"><a href="#inicio">Inicio</a><a href="#cambios">Cambios</a><a href="#ramas">Ramas</a><a href="#remotos">Remotos</a><a href="#recuperar">Recuperar</a></nav><section id="inicio" class="guide-section"><h2>Configuración e inicio</h2><pre><code>git config --global user.name "Tu Nombre"
+git config --global user.email "correo@ejemplo.com"
+git init
+git clone https://github.com/usuario/proyecto.git
+git status</code></pre><p><code>git status</code> es el punto de partida: muestra rama, archivos modificados, área de preparación y conflictos.</p></section><section id="cambios" class="guide-section"><h2>Inspeccionar y confirmar</h2><pre><code>git diff                 # cambios sin preparar
+git diff --staged        # cambios preparados
+git add ruta/archivo
+git commit -m "feat: agrega búsqueda de guías"
+git log --oneline --graph --decorate -20</code></pre><div class="tip"><strong>Buen commit:</strong> agrupa un cambio coherente, evita archivos accidentales y explica la intención en modo imperativo.</div></section><section id="ramas" class="guide-section"><h2>Ramas, merge y rebase</h2><pre><code>git switch -c feat/buscador
+# trabajo y commits
+git switch main
+git merge feat/buscador
+
+# actualizar una rama local antes de compartirla
+git switch feat/buscador
+git rebase main</code></pre><ul class="checklist"><li>Usa ramas cortas y nombres descriptivos.</li><li>Resuelve conflictos revisando el resultado completo, no solo los marcadores.</li><li>No reescribas con rebase commits públicos que otras personas ya consumen.</li><li>Ejecuta pruebas después de una fusión o rebase.</li></ul></section><section id="remotos" class="guide-section"><h2>Repositorios remotos</h2><pre><code>git remote -v
+git fetch origin
+git pull --ff-only origin main
+git push -u origin feat/buscador
+git branch -r</code></pre><p><code>fetch</code> descarga referencias sin modificar tu rama; <code>pull</code> descarga e integra. Revisa antes de integrar cambios ajenos.</p></section><section id="recuperar" class="guide-section"><h2>Deshacer y recuperar</h2><pre><code>git restore archivo.txt
+git restore --staged archivo.txt
+git revert &lt;commit&gt;
+git reflog
+git switch --detach &lt;commit&gt;</code></pre><div class="grid"><article><h3>restore</h3><p>Restaura archivos o los retira del área de preparación.</p></article><article><h3>revert</h3><p>Crea un commit inverso seguro para historial compartido.</p></article><article><h3>reflog</h3><p>Encuentra referencias recientes aunque una rama haya cambiado.</p></article></div><p class="warning"><strong>Cuidado:</strong> <code>reset --hard</code> y <code>clean -fd</code> pueden borrar trabajo local; inspecciona y respalda antes.</p></section><section class="resources"><h2>Documentación oficial</h2><a href="https://git-scm.com/docs" target="_blank" rel="noreferrer">Git Reference</a><a href="https://git-scm.com/book/es/v2" target="_blank" rel="noreferrer">Pro Git en español</a></section></main><footer>CodeSheets · Referencia Git original y práctica</footer></body></html>

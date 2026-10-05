@@ -1,0 +1,41 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Guía práctica de TypeScript: tipos, interfaces, uniones, genéricos y configuración."><title>TypeScript | CodeSheets</title><link rel="icon" type="image/svg+xml" href="../assets/favicon.svg"><link rel="stylesheet" href="../assets/guide.css"></head><body><header class="topbar"><a class="brand" href="../"><span class="brand-icon">&lt;/&gt;</span><span>Code<strong>Sheets</strong></span></a><a class="back" href="../#guias">← Volver a las guías</a></header><main><section class="hero"><p class="eyebrow">JavaScript tipado</p><h1>TypeScript</h1><p>Modela los datos, detecta errores antes de ejecutar y crea APIs internas fáciles de comprender.</p><div class="chips"><span>Tipos</span><span>Interfaces</span><span>Genéricos</span><span>Narrowing</span></div></section><nav class="toc"><a href="#base">Base</a><a href="#modelos">Modelos</a><a href="#uniones">Uniones</a><a href="#genericos">Genéricos</a><a href="#config">Config</a></nav><section id="base" class="guide-section"><h2>Tipos esenciales</h2><p>TypeScript suele inferir tipos correctamente. Añade anotaciones en límites del sistema: parámetros, respuestas públicas y datos externos.</p><pre><code>const proyecto = "CodeSheets"; // string inferido
+let visitas: number = 0;
+const etiquetas: string[] = ["web", "guías"];
+
+function saludar(nombre: string): string {
+  return `Hola, ${nombre}`;
+}</code></pre><div class="tip"><strong>Evita <code>any</code>:</strong> usa <code>unknown</code> para datos todavía no validados y estrecha el tipo antes de operar.</div></section><section id="modelos" class="guide-section"><h2>Interfaces y alias</h2><pre><code>interface Usuario {
+  readonly id: string;
+  nombre: string;
+  rol?: "admin" | "editor";
+}
+
+type Resultado&lt;T&gt; =
+  | { ok: true; datos: T }
+  | { ok: false; error: string };</code></pre><p>Las propiedades opcionales usan <code>?</code>; <code>readonly</code> impide reasignaciones accidentales. Los alias expresan uniones, intersecciones y tipos compuestos.</p></section><section id="uniones" class="guide-section"><h2>Uniones y narrowing</h2><pre><code>type Estado =
+  | { tipo: "cargando" }
+  | { tipo: "listo"; elementos: string[] }
+  | { tipo: "error"; mensaje: string };
+
+function renderizar(estado: Estado) {
+  switch (estado.tipo) {
+    case "listo": return estado.elementos.join(", ");
+    case "error": return estado.mensaje;
+    default: return "Cargando…";
+  }
+}</code></pre><p>Una propiedad discriminante permite que el compilador conozca el caso exacto en cada rama.</p></section><section id="genericos" class="guide-section"><h2>Genéricos</h2><p>Los genéricos preservan relaciones entre tipos sin duplicar código.</p><pre><code>function primero&lt;T&gt;(elementos: T[]): T | undefined {
+  return elementos[0];
+}
+
+interface Repositorio&lt;T extends { id: string }&gt; {
+  obtener(id: string): Promise&lt;T | null&gt;;
+  guardar(valor: T): Promise&lt;void&gt;;
+}</code></pre></section><section id="config" class="guide-section"><h2>Configuración recomendada</h2><pre><code>{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+  }
+}</code></pre><ul class="checklist"><li>Activa <code>strict</code> desde el inicio.</li><li>Valida datos de red o almacenamiento en tiempo de ejecución.</li><li>Genera tipos a partir del dominio, no de componentes visuales aislados.</li><li>Permite inferencia en variables locales y anota las fronteras públicas.</li></ul></section><section class="resources"><h2>Documentación oficial</h2><a href="https://www.typescriptlang.org/docs/" target="_blank" rel="noreferrer">TypeScript Documentation</a><a href="https://www.typescriptlang.org/tsconfig" target="_blank" rel="noreferrer">Referencia TSConfig</a></section></main><footer>CodeSheets · Referencia TypeScript original y práctica</footer></body></html>
