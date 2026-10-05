@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carrito de compras dinámico</title>
+  <style>
+    :root { --primario: #2563eb; --peligro: #dc2626; --fondo: #f8fafc; --texto: #0f172a; --borde: #cbd5e1; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; color: var(--texto); background: var(--fondo); }
+    main { width: min(1100px, 92%); margin: 0 auto; padding: 2rem 0 3rem; }
+    h1 { margin-top: 0; }
+    .descripcion { color: #475569; max-width: 720px; line-height: 1.5; }
+    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; align-items: start; margin-top: 1.5rem; }
+    .productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; }
+    .producto, .carrito { background: #fff; border: 1px solid var(--borde); border-radius: 12px; padding: 1rem; box-shadow: 0 4px 12px rgb(15 23 42 / 6%); }
+    .producto h2 { font-size: 1.1rem; margin: 0 0 .5rem; }
+    .precio { font-weight: 700; color: #166534; }
+    button { border: 0; border-radius: 8px; padding: .65rem .85rem; font: inherit; font-weight: 700; cursor: pointer; }
+    .agregar { width: 100%; background: var(--primario); color: #fff; margin-top: .8rem; }
+    .vaciar, .eliminar { background: var(--peligro); color: #fff; }
+    .carrito { position: sticky; top: 1rem; }
+    #lista-carrito { list-style: none; padding: 0; margin: 1rem 0; }
+    .item-carrito { display: grid; grid-template-columns: 1fr auto; gap: .5rem; align-items: center; padding: .75rem 0; border-bottom: 1px solid #e2e8f0; }
+    .item-carrito p { margin: 0; }
+    .item-carrito small { color: #475569; }
+    .total { font-size: 1.2rem; margin: 1rem 0; }
+    .vacio { color: #64748b; font-style: italic; }
+    @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } .carrito { position: static; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Carrito de compras dinámico</h1>
+    <p class="descripcion">Ejemplo práctico de atributos <code>data-*</code>, eventos, creación de nodos HTML y manipulación del DOM con JavaScript puro.</p>
+
+    <div class="layout">
+      <section aria-labelledby="titulo-productos">
+        <h2 id="titulo-productos">Productos</h2>
+        <div class="productos">
+          <article class="producto">
+            <h2>Audífonos Bluetooth</h2>
+            <p class="precio">$89.900</p>
+            <button class="agregar" data-id="1" data-nombre="Audífonos Bluetooth" data-precio="89900">Agregar al carrito</button>
+          </article>
+          <article class="producto">
+            <h2>Cargador rápido USB-C</h2>
+            <p class="precio">$45.000</p>
+            <button class="agregar" data-id="2" data-nombre="Cargador rápido USB-C" data-precio="45000">Agregar al carrito</button>
+          </article>
+          <article class="producto">
+            <h2>Teclado mecánico</h2>
+            <p class="precio">$159.900</p>
+            <button class="agregar" data-id="3" data-nombre="Teclado mecánico" data-precio="159900">Agregar al carrito</button>
+          </article>
+          <article class="producto">
+            <h2>Mouse inalámbrico</h2>
+            <p class="precio">$69.900</p>
+            <button class="agregar" data-id="4" data-nombre="Mouse inalámbrico" data-precio="69900">Agregar al carrito</button>
+          </article>
+        </div>
+      </section>
+
+      <aside class="carrito" aria-labelledby="titulo-carrito">
+        <h2 id="titulo-carrito">Tu carrito</h2>
+        <ul id="lista-carrito" aria-live="polite"></ul>
+        <p id="mensaje-vacio" class="vacio">El carrito está vacío.</p>
+        <p class="total">Total: <span id="total">$0</span></p>
+        <button id="vaciar-carrito" class="vaciar">Vaciar carrito</button>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const botonesAgregar = document.querySelectorAll('.agregar');
+    const listaCarrito = document.getElementById('lista-carrito');
+    const totalElemento = document.getElementById('total');
+    const botonVaciar = document.getElementById('vaciar-carrito');
+    const mensajeVacio = document.getElementById('mensaje-vacio');
+    const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+    let total = 0;
+
+    botonesAgregar.forEach((boton) => {
+      boton.addEventListener('click', () => {
+        const producto = {
+          id: boton.dataset.id,
+          nombre: boton.dataset.nombre,
+          precio: Number(boton.dataset.precio)
+        };
+        agregarProducto(producto);
+      });
+    });
+
+    function agregarProducto(producto) {
+      const item = document.createElement('li');
+      item.className = 'item-carrito';
+      item.dataset.id = producto.id;
+      item.dataset.precio = producto.precio;
+
+      const detalle = document.createElement('div');
+      const nombre = document.createElement('p');
+      const precio = document.createElement('small');
+      nombre.textContent = producto.nombre;
+      precio.textContent = formatoCOP.format(producto.precio);
+      detalle.appendChild(nombre);
+      detalle.appendChild(precio);
+
+      const eliminar = document.createElement('button');
+      eliminar.className = 'eliminar';
+      eliminar.type = 'button';
+      eliminar.textContent = 'Eliminar';
+      eliminar.addEventListener('click', () => eliminarProducto(item));
+
+      item.appendChild(detalle);
+      item.appendChild(eliminar);
+      listaCarrito.appendChild(item);
+
+      total += producto.precio;
+      actualizarTotal();
+      actualizarMensajeVacio();
+    }
+
+    function eliminarProducto(item) {
+      total -= Number(item.dataset.precio);
+      item.remove();
+      actualizarTotal();
+      actualizarMensajeVacio();
+    }
+
+    function actualizarTotal() {
+      totalElemento.textContent = formatoCOP.format(total);
+    }
+
+    function actualizarMensajeVacio() {
+      mensajeVacio.hidden = listaCarrito.children.length > 0;
+    }
+
+    botonVaciar.addEventListener('click', () => {
+      listaCarrito.innerHTML = '';
+      total = 0;
+      actualizarTotal();
+      actualizarMensajeVacio();
+    });
+  </script>
+</body>
+</html>
