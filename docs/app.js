@@ -12,32 +12,97 @@
   const filters = [...document.querySelectorAll('[data-filter]')];
   const result = document.querySelector('[data-result-count]');
   const empty = document.querySelector('[data-empty-guides]');
+  const resetFilters = document.querySelector('[data-reset-filters]');
   let activeFilter = 'todos';
+
+  const normalizeText = (value = '') => value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('es')
+    .trim()
+    .replace(/\s+/g, ' ');
+
+  const getSearchableText = (card) => [
+    card.dataset.title,
+    card.dataset.description,
+    card.dataset.category,
+    card.dataset.tags,
+    card.dataset.topics,
+    card.dataset.search
+  ].filter(Boolean).join(' ');
+
   const filterGuides = () => {
-    const term = search?.value.trim().toLocaleLowerCase('es') || '';
+    const term = normalizeText(search?.value);
+    const category = normalizeText(activeFilter);
     let visible = 0;
+
     cards.forEach((card) => {
-      const matchesText = card.dataset.search.toLocaleLowerCase('es').includes(term);
-      const matchesCategory = activeFilter === 'todos' || card.dataset.category === activeFilter;
+      const searchableText = normalizeText(getSearchableText(card));
+      const matchesText = !term || searchableText.includes(term);
+      const matchesCategory = category === 'todos' || normalizeText(card.dataset.category) === category;
       card.hidden = !(matchesText && matchesCategory);
       if (!card.hidden) visible += 1;
     });
+
     if (result) result.textContent = `${visible} ${visible === 1 ? 'guía disponible' : 'guías disponibles'}`;
     if (empty) empty.hidden = visible !== 0;
   };
-  search?.addEventListener('input', filterGuides);
-  filters.forEach((button) => button.addEventListener('click', () => {
-    filters.forEach((item) => item.classList.remove('active'));
-    button.classList.add('active');
-    activeFilter = button.dataset.filter;
+
+  const selectFilter = (filter) => {
+    activeFilter = filter;
+    filters.forEach((item) => {
+      const isActive = item.dataset.filter === filter;
+      item.classList.toggle('active', isActive);
+      item.setAttribute('aria-pressed', String(isActive));
+    });
     filterGuides();
-  }));
-  document.querySelector('[data-reset-filters]')?.addEventListener('click', () => {
+  };
+
+  const resetGuideFilters = () => {
     if (search) search.value = '';
-    activeFilter = 'todos';
-    filters.forEach((item) => item.classList.toggle('active', item.dataset.filter === 'todos'));
-    filterGuides();
+    selectFilter('todos');
+    search?.focus();
+  };
+
+  filters.forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.filter === activeFilter));
+    button.addEventListener('click', () => selectFilter(button.dataset.filter));
   });
+
+  search?.addEventListener('input', filterGuides);
+  resetFilters?.addEventListener('click', resetGuideFilters);
+
+  document.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const isEditable = target instanceof HTMLElement && (
+      target.matches('input, textarea, select') || target.isContentEditable
+    );
+
+    if (event.key === '/' && !isEditable) {
+      event.preventDefault();
+      search?.focus();
+      return;
+    }
+
+    if (document.activeElement !== search) return;
+
+    if (event.key === 'Escape') {
+      if (search.value) {
+        search.value = '';
+        filterGuides();
+      } else {
+        search.blur();
+      }
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      const firstGuide = cards.find((card) => !card.hidden)?.querySelector('a[href]');
+      if (firstGuide) firstGuide.click();
+    }
+  });
+
+  filterGuides();
 
   const cartPanel = document.querySelector('[data-cart-open]') ? document.querySelector('#carrito') : null;
   const backdrop = document.querySelector('[data-cart-backdrop]');
