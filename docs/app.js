@@ -8,103 +8,134 @@
   themeButton?.addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
 
   const search = document.querySelector('#buscador');
-  const cards = [...document.querySelectorAll('[data-guide-grid] .guide-card')];
-  const filters = [...document.querySelectorAll('[data-filter]')];
-  const result = document.querySelector('[data-result-count]');
-  const empty = document.querySelector('[data-empty-guides]');
-  const resetFilters = document.querySelector('[data-reset-filters]');
-  let activeFilter = 'todos';
+const cards = [...document.querySelectorAll('[data-guide-grid] .guide-card')];
+const filters = [...document.querySelectorAll('[data-filter]')];
+const result = document.querySelector('[data-result-count]');
+const empty = document.querySelector('[data-empty-guides]');
+const resetFilters = document.querySelector('[data-reset-filters]');
+const searchStatus = document.querySelector('[data-search-status]');
+let activeFilter = 'todos';
+let indexReady = false;
 
-  const normalizeText = (value = '') => value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('es')
-    .trim()
-    .replace(/\s+/g, ' ');
+const normalizeText = (value = '') => value
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .toLocaleLowerCase('es')
+  .replace(/\s+/g, ' ')
+  .trim();
 
-  const getSearchableText = (card) => [
-    card.dataset.title,
-    card.dataset.description,
-    card.dataset.category,
-    card.dataset.tags,
-    card.dataset.topics,
-    card.dataset.search
-  ].filter(Boolean).join(' ');
+const getCardText = (card) => [
+  card.dataset.title,
+  card.dataset.description,
+  card.dataset.category,
+  card.dataset.tags,
+  card.dataset.topics,
+  card.dataset.search,
+  card.dataset.guideContent
+].filter(Boolean).join(' ');
 
-  const filterGuides = () => {
-    const term = normalizeText(search?.value);
-    const category = normalizeText(activeFilter);
-    let visible = 0;
+const setSearchStatus = (message) => {
+  if (searchStatus) searchStatus.textContent = message;
+};
 
-    cards.forEach((card) => {
-      const searchableText = normalizeText(getSearchableText(card));
-      const matchesText = !term || searchableText.includes(term);
-      const matchesCategory = category === 'todos' || normalizeText(card.dataset.category) === category;
-      card.hidden = !(matchesText && matchesCategory);
-      if (!card.hidden) visible += 1;
-    });
+const filterGuides = () => {
+  const terms = normalizeText(search?.value).split(' ').filter(Boolean);
+  const category = normalizeText(activeFilter);
+  let visible = 0;
 
-    if (result) result.textContent = `${visible} ${visible === 1 ? 'guía disponible' : 'guías disponibles'}`;
-    if (empty) empty.hidden = visible !== 0;
-  };
-
-  const selectFilter = (filter) => {
-    activeFilter = filter;
-    filters.forEach((item) => {
-      const isActive = item.dataset.filter === filter;
-      item.classList.toggle('active', isActive);
-      item.setAttribute('aria-pressed', String(isActive));
-    });
-    filterGuides();
-  };
-
-  const resetGuideFilters = () => {
-    if (search) search.value = '';
-    selectFilter('todos');
-    search?.focus();
-  };
-
-  filters.forEach((button) => {
-    button.setAttribute('aria-pressed', String(button.dataset.filter === activeFilter));
-    button.addEventListener('click', () => selectFilter(button.dataset.filter));
+  cards.forEach((card) => {
+    const searchableText = normalizeText(getCardText(card));
+    const matchesText = !terms.length || terms.every((term) => searchableText.includes(term));
+    const matchesCategory = category === 'todos' || normalizeText(card.dataset.category) === category;
+    card.hidden = !(matchesText && matchesCategory);
+    if (!card.hidden) visible += 1;
   });
 
-  search?.addEventListener('input', filterGuides);
-  resetFilters?.addEventListener('click', resetGuideFilters);
+  if (result) result.textContent = `${visible} ${visible === 1 ? 'guía disponible' : 'guías disponibles'}`;
+  if (empty) empty.hidden = visible !== 0;
+};
 
-  document.addEventListener('keydown', (event) => {
-    const target = event.target;
-    const isEditable = target instanceof HTMLElement && (
-      target.matches('input, textarea, select') || target.isContentEditable
-    );
-
-    if (event.key === '/' && !isEditable) {
-      event.preventDefault();
-      search?.focus();
-      return;
-    }
-
-    if (document.activeElement !== search) return;
-
-    if (event.key === 'Escape') {
-      if (search.value) {
-        search.value = '';
-        filterGuides();
-      } else {
-        search.blur();
-      }
-      return;
-    }
-
-    if (event.key === 'Enter') {
-      const firstGuide = cards.find((card) => !card.hidden)?.querySelector('a[href]');
-      if (firstGuide) firstGuide.click();
-    }
+const selectFilter = (filter) => {
+  activeFilter = filter;
+  filters.forEach((item) => {
+    const isActive = item.dataset.filter === filter;
+    item.classList.toggle('active', isActive);
+    item.setAttribute('aria-pressed', String(isActive));
   });
-
   filterGuides();
+};
 
-  const cartPanel = document.querySelector('[data-cart-open]') ? document.querySelector('#carrito') : null;
+const resetGuideFilters = () => {
+  if (search) search.value = '';
+  selectFilter('todos');
+  search?.focus();
+};
+
+const indexGuides = async () => {
+  const cardsWithSource = cards.filter((card) => card.dataset.guideSource);
+  if (!cardsWithSource.length) return;
+
+  setSearchStatus('Preparando búsqueda dentro de las guías…');
+  search?.setAttribute('aria-busy', 'true');
+
+  const results = await Promise.allSettled(cardsWithSource.map(async (card) => {
+    const response = await fetch(card.dataset.guideSource, { cache: 'force-cache' });
+    if (!response.ok) throw new Error(`No se pudo cargar ${card.dataset.guideSource}`);
+    const text = await response.text();
+    card.dataset.guideContent = text;
+  }));
+
+  const indexed = results.filter((item) => item.status === 'fulfilled').length;
+  indexReady = indexed === cardsWithSource.length;
+  search?.removeAttribute('aria-busy');
+  setSearchStatus(indexReady
+    ? 'Búsqueda lista: también encuentra palabras dentro de cada guía.'
+    : `Búsqueda lista en ${indexed} de ${cardsWithSource.length} guías.`);
+  filterGuides();
+};
+
+filters.forEach((button) => {
+  button.setAttribute('aria-pressed', String(button.dataset.filter === activeFilter));
+  button.addEventListener('click', () => selectFilter(button.dataset.filter));
+});
+
+search?.addEventListener('input', filterGuides);
+resetFilters?.addEventListener('click', resetGuideFilters);
+
+document.addEventListener('keydown', (event) => {
+  const target = event.target;
+  const isEditable = target instanceof HTMLElement && (
+    target.matches('input, textarea, select') || target.isContentEditable
+  );
+
+  if (event.key === '/' && !isEditable) {
+    event.preventDefault();
+    search?.focus();
+    return;
+  }
+
+  if (document.activeElement !== search) return;
+
+  if (event.key === 'Escape') {
+    if (search?.value) {
+      search.value = '';
+      filterGuides();
+    } else {
+      search?.blur();
+    }
+    return;
+  }
+
+  if (event.key === 'Enter') {
+    const firstGuide = cards.find((card) => !card.hidden)?.querySelector('a[href]');
+    if (firstGuide) firstGuide.click();
+  }
+});
+
+filterGuides();
+indexGuides();
+
+const cartPanel = document.querySelector('[data-cart-open]') ? document.querySelector('#carrito') : null;
   const backdrop = document.querySelector('[data-cart-backdrop]');
   const itemsNode = document.querySelector('[data-cart-items]');
   const emptyCart = document.querySelector('[data-cart-empty]');
