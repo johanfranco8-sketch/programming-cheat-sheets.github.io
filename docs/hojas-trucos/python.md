@@ -3,46 +3,53 @@
 ## Inicio rápido
 ```python
 print('Hola, mundo')
-numero = 10
-texto = 'Python'
+nombre = 'Johan'
+edad = 20
+activo = True
 ```
 
 ## Colecciones
 ```python
-lista = [1, 2, 3]
-diccionario = {'nombre': 'Ana', 'edad': 20}
-lista.append(4)
-valor = diccionario.get('nombre')
+numeros = [1, 2, 3]
+numeros.append(4)
+usuario = {'nombre': 'Ana', 'edad': 20}
+usuario['ciudad'] = 'Bogotá'
+for numero in numeros:
+    print(numero)
 ```
 
-## Condiciones y ciclos
+## Comprensiones
 ```python
-if numero > 0:
-    print('positivo')
-
-for item in lista:
-    print(item)
-
-while numero > 0:
-    numero -= 1
+cuadrados = [n ** 2 for n in range(10)]
+pares = [n for n in numeros if n % 2 == 0]
 ```
 
 ## Funciones
 ```python
 def saludar(nombre='mundo'):
     return f'Hola, {nombre}'
+
+resultado = saludar('Ana')
 ```
 
-## Archivos
+## Errores y archivos
 ```python
-with open('datos.txt', 'r', encoding='utf-8') as archivo:
-    contenido = archivo.read()
+try:
+    with open('datos.txt', encoding='utf-8') as archivo:
+        contenido = archivo.read()
+except FileNotFoundError:
+    print('Archivo no encontrado')
 ```
 
-## Entorno virtual
+## Entornos y paquetes
 ```bash
 python -m venv .venv
 # Windows: .venv\\Scripts\\activate
 # macOS/Linux: source .venv/bin/activate
-pip install paquete
+pip install requests
 ```
+
+## Buenas prácticas
+- Usa nombres descriptivos y `snake_case` para variables y funciones.
+- Evita capturar excepciones genéricas si puedes manejar errores específicos.
+- Guarda dependencias con `pip freeze > requirements.txt`.

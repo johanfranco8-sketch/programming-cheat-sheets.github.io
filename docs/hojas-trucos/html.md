@@ -1,22 +1,23 @@
 # Hoja de trucos: HTML
 
-## Estructura base
+## Documento base
 ```html
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi página</title>
+  <meta name="description" content="Descripción de la página">
+  <title>Mi sitio</title>
 </head>
 <body></body>
 </html>
 ```
 
-## Semántica
+## Estructura semántica
 ```html
 <header>Encabezado</header>
-<nav>Navegación</nav>
+<nav aria-label="Principal">Navegación</nav>
 <main><section><article>Contenido</article></section></main>
 <footer>Pie de página</footer>
 ```
@@ -27,11 +28,16 @@
 <img src="foto.jpg" alt="Descripción útil de la imagen">
 ```
 
-## Formularios
+## Formularios accesibles
 ```html
 <form>
-  <label for="correo">Correo</label>
-  <input id="correo" type="email" required>
+  <label for="correo">Correo electrónico</label>
+  <input id="correo" type="email" autocomplete="email" required>
   <button type="submit">Enviar</button>
 </form>
 ```
+
+## Buenas prácticas
+- Usa una etiqueta semántica según el significado, no por apariencia.
+- Cada imagen informativa necesita texto alternativo útil.
+- Relaciona cada `input` con su `label`.

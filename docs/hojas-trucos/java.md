@@ -1,6 +1,6 @@
 # Hoja de trucos: Java
 
-## Clase y método principal
+## Clase principal
 ```java
 public class Main {
   public static void main(String[] args) {
@@ -18,20 +18,13 @@ if (edad >= 18) {
 }
 ```
 
-## Métodos
-```java
-static int sumar(int a, int b) {
-  return a + b;
-}
-```
-
-## Clases y objetos
+## Métodos y objetos
 ```java
 class Persona {
-  String nombre;
+  private String nombre;
   Persona(String nombre) { this.nombre = nombre; }
+  public String getNombre() { return nombre; }
 }
-Persona persona = new Persona("Johan");
 ```
 
 ## Colecciones
@@ -39,4 +32,19 @@ Persona persona = new Persona("Johan");
 import java.util.ArrayList;
 ArrayList<String> nombres = new ArrayList<>();
 nombres.add("Ana");
+for (String item : nombres) System.out.println(item);
 ```
+
+## Excepciones
+```java
+try {
+  int valor = Integer.parseInt("10");
+} catch (NumberFormatException error) {
+  System.out.println("Número inválido");
+}
+```
+
+## Buenas prácticas
+- Usa nombres claros para clases, métodos y variables.
+- Mantén campos privados y expón solo lo necesario.
+- Cierra recursos con `try-with-resources` cuando trabajes con archivos.

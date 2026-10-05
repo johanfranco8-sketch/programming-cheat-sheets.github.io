@@ -23,17 +23,25 @@ ps aux
 ```powershell
 Get-Location
 Get-ChildItem
-Set-Location .\\carpeta
+Set-Location .\carpeta
 New-Item archivo.txt -ItemType File
 Copy-Item origen.txt destino.txt
 Remove-Item archivo.txt
 Get-Process
 ```
 
-## Git desde terminal
+## Permisos y scripts
 ```bash
-git status
-git add .
-git commit -m "feat: cambio"
-git push
+chmod +x script.sh
+./script.sh
 ```
+
+```powershell
+Set-ExecutionPolicy -Scope Process RemoteSigned
+.\script.ps1
+```
+
+## Buenas prácticas
+- Comprueba la ruta actual antes de ejecutar comandos destructivos.
+- Usa `--` o comillas cuando trabajes con nombres de archivo especiales.
+- Prueba scripts en una carpeta de ejemplo antes de automatizar tareas reales.

@@ -3,73 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Hojas de trucos de programación en español con descargas y carrito de recursos." />
-  <title>Programación Fácil | Hojas de trucos</title>
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <meta name="description" content="Catálogo de hojas de trucos de programación en español con buscador y carrito de recursos descargables." />
+  <title>Hojas de trucos de programación</title>
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-content">
-      <a class="brand" href="#inicio" aria-label="Ir al inicio">Programación Fácil</a>
-      <nav aria-label="Navegación principal">
-        <a href="#aprender">Aprender</a>
-        <a href="#carrito">Carrito <span id="contador-carrito" aria-label="recursos en el carrito">0</span></a>
-      </nav>
-    </div>
+  <header class="hero">
+    <p class="eyebrow">RECURSOS PRÁCTICOS EN ESPAÑOL</p>
+    <h1>Hojas de trucos para aprender programación</h1>
+    <p>Explora guías de referencia con comandos, ejemplos y buenas prácticas. Busca por lenguaje o concepto, añade recursos al carrito y descarga tus documentos para estudiar sin conexión.</p>
+    <label class="search" for="buscador">Buscar tecnología, concepto o herramienta
+      <input id="buscador" type="search" placeholder="Ejemplo: python, bases de datos, flexbox, terminal..." autocomplete="off" />
+    </label>
   </header>
 
-  <main id="inicio">
-    <section class="hero">
-      <div class="container">
-        <p class="eyebrow">RECURSOS PRÁCTICOS EN ESPAÑOL</p>
-        <h1>Elige un lenguaje y descarga su hoja de trucos</h1>
-        <p>Consulta comandos esenciales, agrégalos al carrito como recursos de estudio y descarga el documento correspondiente para usarlo sin conexión.</p>
-        <a class="button button-primary" href="#aprender">Explorar lenguajes</a>
-      </div>
-    </section>
-
-    <section id="aprender" class="section container" aria-labelledby="titulo-aprender">
+  <main>
+    <section aria-labelledby="catalogo-titulo">
       <div class="section-heading">
-        <p class="eyebrow">CATÁLOGO</p>
-        <h2 id="titulo-aprender">Selecciona un lenguaje</h2>
-      </div>
-      <div id="lista-lenguajes" class="language-grid" aria-live="polite"></div>
-    </section>
-
-    <section id="detalle" class="section section-muted">
-      <div class="container detail-card">
         <div>
-          <p class="eyebrow">RECURSO SELECCIONADO</p>
-          <h2 id="lenguaje-nombre">Selecciona una tecnología</h2>
-          <p id="lenguaje-descripcion">Elige una tarjeta del catálogo para ver su descripción, añadirla al carrito o descargar su hoja de trucos.</p>
-          <p id="lenguaje-precio" class="resource-price">Gratis</p>
+          <p class="eyebrow">CATÁLOGO</p>
+          <h2 id="catalogo-titulo">Elige tu próxima hoja de trucos</h2>
         </div>
-        <div class="detail-actions">
-          <button id="agregar-carrito" class="button button-primary" type="button" disabled>Agregar al carrito</button>
-          <a id="descargar-hoja" class="button button-secondary disabled" href="#" download aria-disabled="true">Descargar hoja</a>
-        </div>
+        <p id="resultado" aria-live="polite">9 tecnologías disponibles</p>
+      </div>
+
+      <div class="grid" id="catalogo">
+        <article class="card" data-search="python py programación programacion sintaxis colecciones funciones archivos automatizacion datos django flask pandas ia inteligencia artificial">
+          <span class="badge">Principiante a intermedio</span><h3>Python</h3>
+          <p>Sintaxis legible, colecciones, funciones, archivos, errores, entornos virtuales y automatización.</p>
+          <ul><li>Listas, diccionarios y comprensiones</li><li>Funciones, módulos y excepciones</li><li>Archivos y entornos virtuales</li></ul>
+          <button class="agregar-carrito" type="button" data-id="python" data-nombre="Hoja de trucos: Python" data-precio="0" data-documento="docs/hojas-trucos/python.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/python.md" download="hoja-trucos-python.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="javascript js ecmascript dom eventos arrays arreglos objetos asincronia fetch promesas frontend web node react">
+          <span class="badge">Frontend y backend</span><h3>JavaScript</h3>
+          <p>Variables, arreglos, objetos, DOM, eventos, módulos, asincronía y peticiones a APIs.</p>
+          <ul><li>map, filter y reduce</li><li>Eventos y manipulación del DOM</li><li>async/await y fetch</li></ul>
+          <button class="agregar-carrito" type="button" data-id="javascript" data-nombre="Hoja de trucos: JavaScript" data-precio="0" data-documento="docs/hojas-trucos/javascript.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/javascript.md" download="hoja-trucos-javascript.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="git github control versiones commits ramas branch merge rebase remoto pull push colaboracion">
+          <span class="badge">Control de versiones</span><h3>Git</h3>
+          <p>Flujo de trabajo, commits, ramas, remotos, resolución de conflictos y recuperación segura.</p>
+          <ul><li>add, commit, status y log</li><li>switch, merge y rebase</li><li>pull requests y remotos</li></ul>
+          <button class="agregar-carrito" type="button" data-id="git" data-nombre="Hoja de trucos: Git" data-precio="0" data-documento="docs/hojas-trucos/git.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/git.md" download="hoja-trucos-git.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="css estilos diseño diseno flexbox grid responsive responsivo animaciones selectores frontend web">
+          <span class="badge">Diseño web</span><h3>CSS</h3>
+          <p>Selectores, cascada, Flexbox, Grid, diseño adaptable, variables, estados y accesibilidad visual.</p>
+          <ul><li>Modelo de caja y especificidad</li><li>Layouts con Flexbox y Grid</li><li>Media queries y variables</li></ul>
+          <button class="agregar-carrito" type="button" data-id="css" data-nombre="Hoja de trucos: CSS" data-precio="0" data-documento="docs/hojas-trucos/css.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/css.md" download="hoja-trucos-css.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="html estructura semantica semántica formularios accesibilidad etiquetas seo web frontend">
+          <span class="badge">Fundamentos web</span><h3>HTML</h3>
+          <p>Estructura de documentos, semántica, enlaces, imágenes, formularios y accesibilidad básica.</p>
+          <ul><li>header, main, section y article</li><li>Formularios con label y validación</li><li>Texto alternativo y metadatos</li></ul>
+          <button class="agregar-carrito" type="button" data-id="html" data-nombre="Hoja de trucos: HTML" data-precio="0" data-documento="docs/hojas-trucos/html.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/html.md" download="hoja-trucos-html.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="sql base datos bases de datos consultas select where join mysql postgresql sqlite tablas registros">
+          <span class="badge">Bases de datos</span><h3>SQL</h3>
+          <p>Consultas, filtros, joins, agregaciones, cambios de datos, transacciones y seguridad.</p>
+          <ul><li>SELECT, WHERE y ORDER BY</li><li>JOIN y GROUP BY</li><li>INSERT, UPDATE y DELETE</li></ul>
+          <button class="agregar-carrito" type="button" data-id="sql" data-nombre="Hoja de trucos: SQL" data-precio="0" data-documento="docs/hojas-trucos/sql.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/sql.md" download="hoja-trucos-sql.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="bash powershell terminal consola comandos archivos procesos scripts linux windows shell automatizacion">
+          <span class="badge">Terminal y automatización</span><h3>Bash y PowerShell</h3>
+          <p>Archivos, búsquedas, procesos, permisos, scripts y comandos para Windows, Linux y macOS.</p>
+          <ul><li>Navegación y gestión de archivos</li><li>Buscar contenido y procesos</li><li>Automatización con scripts</li></ul>
+          <button class="agregar-carrito" type="button" data-id="bash-powershell" data-nombre="Hoja de trucos: Bash y PowerShell" data-precio="0" data-documento="docs/hojas-trucos/bash-powershell.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/bash-powershell.md" download="hoja-trucos-bash-powershell.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="java poo objetos clases metodos métodos colecciones excepciones spring backend">
+          <span class="badge">Programación orientada a objetos</span><h3>Java</h3>
+          <p>Clases, objetos, métodos, colecciones, excepciones, archivos y convenciones de código limpio.</p>
+          <ul><li>Clases, constructores y encapsulación</li><li>ArrayList, Map y ciclos</li><li>Excepciones y recursos</li></ul>
+          <button class="agregar-carrito" type="button" data-id="java" data-nombre="Hoja de trucos: Java" data-precio="0" data-documento="docs/hojas-trucos/java.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/java.md" download="hoja-trucos-java.md">Descargar ahora</a>
+        </article>
+        <article class="card" data-search="typescript ts tipos interfaces genericos genéricos javascript angular react frontend tipado">
+          <span class="badge">JavaScript con tipos</span><h3>TypeScript</h3>
+          <p>Tipos, interfaces, uniones, genéricos, utilitarios y configuración para proyectos mantenibles.</p>
+          <ul><li>Tipos primitivos e interfaces</li><li>Uniones, narrowing y genéricos</li><li>Utility types y tsconfig</li></ul>
+          <button class="agregar-carrito" type="button" data-id="typescript" data-nombre="Hoja de trucos: TypeScript" data-precio="0" data-documento="docs/hojas-trucos/typescript.md">Agregar al carrito</button>
+          <a href="docs/hojas-trucos/typescript.md" download="hoja-trucos-typescript.md">Descargar ahora</a>
+        </article>
+      </div>
+      <p id="sin-resultados" class="empty" hidden>No se encontraron tecnologías con esa búsqueda. Prueba con palabras como “web”, “datos”, “terminal”, “objetos” o el nombre de un lenguaje.</p>
+    </section>
+
+    <section class="study-guide" aria-labelledby="guia-titulo">
+      <p class="eyebrow">RUTA DE ESTUDIO</p>
+      <h2 id="guia-titulo">Cómo aprovechar las hojas de trucos</h2>
+      <div class="guide-grid">
+        <article><h3>1. Busca por objetivo</h3><p>Usa conceptos como “formularios”, “datos”, “terminal” o “asincronía” para encontrar recursos relacionados, incluso si no recuerdas el nombre exacto del lenguaje.</p></article>
+        <article><h3>2. Practica el ejemplo</h3><p>No memorices comandos de forma aislada: copia un bloque, ejecútalo en un proyecto de prueba y cambia sus valores para entenderlo.</p></article>
+        <article><h3>3. Guarda tu selección</h3><p>Agrega las hojas relevantes al carrito y descárgalas para mantener un conjunto de referencia para tu sesión de estudio.</p></article>
       </div>
     </section>
 
-    <section id="carrito" class="section container" aria-labelledby="titulo-carrito">
-      <div class="section-heading">
-        <p class="eyebrow">RECURSOS ELEGIDOS</p>
-        <h2 id="titulo-carrito">Carrito de estudio</h2>
-      </div>
+    <section class="cart-section" aria-labelledby="carrito-titulo">
+      <div class="section-heading"><div><p class="eyebrow">MIS RECURSOS</p><h2 id="carrito-titulo">Carrito de hojas de trucos</h2></div><p id="contador-carrito" aria-live="polite">0 recursos</p></div>
       <div class="cart-panel">
+        <p id="carrito-vacio" class="empty">Tu carrito está vacío. Agrega una hoja de trucos desde el catálogo.</p>
         <ul id="lista-carrito" class="cart-list" aria-live="polite"></ul>
-        <p id="carrito-vacio" class="empty-message">Aún no has agregado recursos al carrito.</p>
-        <div class="cart-summary">
-          <p>Total: <span id="total-carrito">$0</span></p>
-          <button id="vaciar-carrito" class="button button-danger" type="button">Vaciar carrito</button>
-        </div>
+        <div class="cart-summary"><p>Total: <strong id="total">$0</strong></p><button id="vaciar-carrito" type="button" class="danger">Vaciar Carrito</button></div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">Hojas de trucos de programación para estudiar y practicar.</div>
-  </footer>
-  <script src="assets/js/app.js"></script>
+  <footer><p>Hojas de trucos prácticas para aprender, consultar y construir proyectos.</p></footer>
+  <script src="js/app.js"></script>
 </body>
 </html>
