@@ -1,129 +1,192 @@
-const buscador = document.querySelector('#buscador');
-const tarjetas = [...document.querySelectorAll('.card')];
-const resultado = document.querySelector('#resultado');
-const sinResultados = document.querySelector('#sin-resultados');
-const botonesAgregar = [...document.querySelectorAll('.agregar-carrito')];
-const listaCarrito = document.querySelector('#lista-carrito');
-const carritoVacio = document.querySelector('#carrito-vacio');
-const totalElemento = document.querySelector('#total');
-const contadorCarrito = document.querySelector('#contador-carrito');
-const botonVaciar = document.querySelector('#vaciar-carrito');
+(() => {
+  const root = document.documentElement;
+  const themeButton = document.querySelector('[data-theme-toggle]');
+  const savedTheme = (() => { try { return localStorage.getItem('codesheets-theme'); } catch { return null; } })();
+  let theme = savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const setTheme = (value) => { theme = value; root.dataset.theme = value; if (themeButton) themeButton.setAttribute('aria-label', `Cambiar a tema ${value === 'dark' ? 'claro' : 'oscuro'}`); try { localStorage.setItem('codesheets-theme', value); } catch {} };
+  setTheme(theme);
+  themeButton?.addEventListener('click', () => setTheme(theme === 'dark' ? 'light' : 'dark'));
 
-let total = 0;
-let cantidadRecursos = 0;
-const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+  const search = document.querySelector('#buscador');
+  const cards = [...document.querySelectorAll('[data-guide-grid] .guide-card')];
+  const filters = [...document.querySelectorAll('[data-filter]')];
+  const result = document.querySelector('[data-result-count]');
+  const empty = document.querySelector('[data-empty-guides]');
+  const resetFilters = document.querySelector('[data-reset-filters]');
+  let activeFilter = 'todos';
 
-function normalizar(texto) {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-}
+  const normalizeText = (value = '') => value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('es')
+    .trim()
+    .replace(/\s+/g, ' ');
 
-function distanciaLevenshtein(a, b) {
-  const filas = a.length + 1;
-  const columnas = b.length + 1;
-  const matriz = Array.from({ length: filas }, (_, i) => [i]);
-  for (let j = 0; j < columnas; j += 1) matriz[0][j] = j;
-  for (let i = 1; i < filas; i += 1) {
-    for (let j = 1; j < columnas; j += 1) {
-      const costo = a[i - 1] === b[j - 1] ? 0 : 1;
-      matriz[i][j] = Math.min(matriz[i - 1][j] + 1, matriz[i][j - 1] + 1, matriz[i - 1][j - 1] + costo);
-    }
-  }
-  return matriz[a.length][b.length];
-}
+  const getSearchableText = (card) => [
+    card.dataset.title,
+    card.dataset.description,
+    card.dataset.category,
+    card.dataset.tags,
+    card.dataset.topics,
+    card.dataset.search
+  ].filter(Boolean).join(' ');
 
-function coincideBusqueda(textoTarjeta, consulta) {
-  if (!consulta) return true;
-  const palabrasConsulta = consulta.split(/\s+/).filter(Boolean);
-  const palabrasTarjeta = textoTarjeta.split(/\s+/).filter(Boolean);
-  return palabrasConsulta.every((palabra) => {
-    if (textoTarjeta.includes(palabra)) return true;
-    return palabrasTarjeta.some((candidata) => {
-      const limite = palabra.length <= 4 ? 1 : 2;
-      return candidata.startsWith(palabra) || palabra.startsWith(candidata) || distanciaLevenshtein(candidata, palabra) <= limite;
+  const filterGuides = () => {
+    const term = normalizeText(search?.value);
+    const category = normalizeText(activeFilter);
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const searchableText = normalizeText(getSearchableText(card));
+      const matchesText = !term || searchableText.includes(term);
+      const matchesCategory = category === 'todos' || normalizeText(card.dataset.category) === category;
+      card.hidden = !(matchesText && matchesCategory);
+      if (!card.hidden) visible += 1;
     });
-  });
-}
 
-function filtrar() {
-  const termino = normalizar(buscador.value);
-  let visibles = 0;
-  tarjetas.forEach((tarjeta) => {
-    const texto = normalizar(`${tarjeta.dataset.search} ${tarjeta.textContent}`);
-    const coincide = coincideBusqueda(texto, termino);
-    tarjeta.hidden = !coincide;
-    if (coincide) visibles += 1;
-  });
-  resultado.textContent = `${visibles} ${visibles === 1 ? 'tecnología disponible' : 'tecnologías disponibles'}`;
-  sinResultados.hidden = visibles !== 0;
-}
-
-function actualizarCarrito() {
-  totalElemento.textContent = formatoCOP.format(total);
-  contadorCarrito.textContent = `${cantidadRecursos} ${cantidadRecursos === 1 ? 'recurso' : 'recursos'}`;
-  carritoVacio.hidden = cantidadRecursos > 0;
-}
-
-function agregarProducto(boton) {
-  const producto = {
-    id: boton.dataset.id,
-    nombre: boton.dataset.nombre,
-    precio: Number(boton.dataset.precio),
-    documento: boton.dataset.documento
+    if (result) result.textContent = `${visible} ${visible === 1 ? 'guía disponible' : 'guías disponibles'}`;
+    if (empty) empty.hidden = visible !== 0;
   };
-  const item = document.createElement('li');
-  item.className = 'cart-item';
-  item.dataset.id = producto.id;
-  item.dataset.precio = String(producto.precio);
 
-  const informacion = document.createElement('div');
-  const titulo = document.createElement('h3');
-  const detalle = document.createElement('p');
-  titulo.textContent = producto.nombre;
-  detalle.textContent = producto.precio === 0 ? 'Recurso gratuito · documento incluido' : formatoCOP.format(producto.precio);
-  informacion.appendChild(titulo);
-  informacion.appendChild(detalle);
+  const selectFilter = (filter) => {
+    activeFilter = filter;
+    filters.forEach((item) => {
+      const isActive = item.dataset.filter === filter;
+      item.classList.toggle('active', isActive);
+      item.setAttribute('aria-pressed', String(isActive));
+    });
+    filterGuides();
+  };
 
-  const acciones = document.createElement('div');
-  acciones.className = 'cart-actions';
-  const descarga = document.createElement('a');
-  descarga.href = producto.documento;
-  descarga.download = producto.documento.split('/').pop();
-  descarga.className = 'download-link';
-  descarga.textContent = 'Descargar';
+  const resetGuideFilters = () => {
+    if (search) search.value = '';
+    selectFilter('todos');
+    search?.focus();
+  };
 
-  const eliminar = document.createElement('button');
-  eliminar.type = 'button';
-  eliminar.className = 'remove-button';
-  eliminar.textContent = 'Eliminar';
-  eliminar.addEventListener('click', () => eliminarProducto(item));
+  filters.forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.filter === activeFilter));
+    button.addEventListener('click', () => selectFilter(button.dataset.filter));
+  });
 
-  acciones.appendChild(descarga);
-  acciones.appendChild(eliminar);
-  item.appendChild(informacion);
-  item.appendChild(acciones);
-  listaCarrito.appendChild(item);
+  search?.addEventListener('input', filterGuides);
+  resetFilters?.addEventListener('click', resetGuideFilters);
 
-  total += producto.precio;
-  cantidadRecursos += 1;
-  actualizarCarrito();
-}
+  document.addEventListener('keydown', (event) => {
+    const target = event.target;
+    const isEditable = target instanceof HTMLElement && (
+      target.matches('input, textarea, select') || target.isContentEditable
+    );
 
-function eliminarProducto(item) {
-  total -= Number(item.dataset.precio);
-  cantidadRecursos -= 1;
-  item.remove();
-  actualizarCarrito();
-}
+    if (event.key === '/' && !isEditable) {
+      event.preventDefault();
+      search?.focus();
+      return;
+    }
 
-function vaciarCarrito() {
-  listaCarrito.replaceChildren();
-  total = 0;
-  cantidadRecursos = 0;
-  actualizarCarrito();
-}
+    if (document.activeElement !== search) return;
 
-buscador.addEventListener('input', filtrar);
-botonesAgregar.forEach((boton) => boton.addEventListener('click', () => agregarProducto(boton)));
-botonVaciar.addEventListener('click', vaciarCarrito);
-filtrar();
-actualizarCarrito();
+    if (event.key === 'Escape') {
+      if (search.value) {
+        search.value = '';
+        filterGuides();
+      } else {
+        search.blur();
+      }
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      const firstGuide = cards.find((card) => !card.hidden)?.querySelector('a[href]');
+      if (firstGuide) firstGuide.click();
+    }
+  });
+
+  filterGuides();
+
+  const cartPanel = document.querySelector('[data-cart-open]') ? document.querySelector('#carrito') : null;
+  const backdrop = document.querySelector('[data-cart-backdrop]');
+  const itemsNode = document.querySelector('[data-cart-items]');
+  const emptyCart = document.querySelector('[data-cart-empty]');
+  const totalNode = document.querySelector('[data-cart-total]');
+  const countNodes = document.querySelectorAll('[data-cart-count]');
+  const toast = document.querySelector('[data-toast]');
+  let cart = (() => { try { return JSON.parse(localStorage.getItem('codesheets-cart')) || []; } catch { return []; } })();
+  const money = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+  const saveCart = () => { try { localStorage.setItem('codesheets-cart', JSON.stringify(cart)); } catch {} };
+  const notify = (message) => { if (!toast) return; toast.textContent = message; toast.classList.add('show'); clearTimeout(notify.timer); notify.timer = setTimeout(() => toast.classList.remove('show'), 2200); };
+  const renderCart = () => {
+    if (!itemsNode) return;
+    itemsNode.replaceChildren();
+    let total = 0;
+    let count = 0;
+    cart.forEach((item) => {
+      total += item.precio * item.cantidad;
+      count += item.cantidad;
+      const row = document.createElement('article'); row.className = 'cart-item';
+      const copy = document.createElement('div');
+      const name = document.createElement('strong'); name.textContent = item.nombre;
+      const detail = document.createElement('p'); detail.textContent = `${money.format(item.precio)} · Cantidad ${item.cantidad}`;
+      const remove = document.createElement('button'); remove.className = 'remove-item'; remove.type = 'button'; remove.textContent = 'Eliminar'; remove.setAttribute('aria-label', `Eliminar ${item.nombre}`); remove.dataset.removeId = item.id;
+      copy.appendChild(name); copy.appendChild(detail); row.appendChild(copy); row.appendChild(remove); itemsNode.appendChild(row);
+    });
+    if (emptyCart) emptyCart.hidden = cart.length > 0;
+    if (totalNode) totalNode.textContent = money.format(total);
+    countNodes.forEach((node) => { node.textContent = count; });
+    saveCart();
+  };
+  const openCart = () => { if (!cartPanel) return; cartPanel.classList.add('open'); cartPanel.setAttribute('aria-hidden', 'false'); if (backdrop) backdrop.hidden = false; document.body.style.overflow = 'hidden'; document.querySelector('[data-cart-close]')?.focus(); };
+  const closeCart = () => { if (!cartPanel) return; cartPanel.classList.remove('open'); cartPanel.setAttribute('aria-hidden', 'true'); if (backdrop) backdrop.hidden = true; document.body.style.overflow = ''; };
+  document.querySelector('[data-cart-open]')?.addEventListener('click', openCart);
+  document.querySelector('[data-cart-close]')?.addEventListener('click', closeCart);
+  backdrop?.addEventListener('click', closeCart);
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeCart(); });
+  document.querySelectorAll('.add-to-cart').forEach((button) => button.addEventListener('click', () => {
+    const id = button.dataset.id;
+    const current = cart.find((item) => item.id === id);
+    if (current) current.cantidad += 1;
+    else cart.push({ id, nombre: button.dataset.nombre, precio: Number(button.dataset.precio), cantidad: 1 });
+    renderCart(); notify(`${button.dataset.nombre} agregado`); openCart();
+  }));
+  itemsNode?.addEventListener('click', (event) => { const button = event.target.closest('[data-remove-id]'); if (!button) return; cart = cart.filter((item) => item.id !== button.dataset.removeId); renderCart(); notify('Recurso eliminado'); });
+  document.querySelector('[data-cart-clear]')?.addEventListener('click', () => { cart = []; renderCart(); notify('Carrito vaciado'); });
+  renderCart();
+})();
+
+(() => {
+  const content = document.querySelector('[data-guide-content]');
+  const nav = document.querySelector('[data-guide-nav]');
+  if (!content || !nav) return;
+  const guides = {
+    python: ['python.md', 'Python', 'Datos'], javascript: ['javascript.md', 'JavaScript', 'Web'],
+    html: ['html.md', 'HTML', 'Web'], css: ['css.md', 'CSS', 'Web'], git: ['git.md', 'Git', 'Herramientas'],
+    sql: ['sql.md', 'SQL', 'Datos'], java: ['java.md', 'Java', 'Backend'],
+    typescript: ['typescript.md', 'TypeScript', 'Web'], terminal: ['bash-powershell.md', 'Bash y PowerShell', 'Herramientas']
+  };
+  const key = new URLSearchParams(location.search).get('tema');
+  const guide = guides[key];
+  const slug = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const addCopy = (wrapper, code) => {
+    const button = document.createElement('button'); button.className = 'copy-code'; button.type = 'button'; button.textContent = 'Copiar';
+    button.addEventListener('click', async () => { try { await navigator.clipboard.writeText(code.textContent); button.textContent = 'Copiado'; setTimeout(() => button.textContent = 'Copiar', 1500); } catch { button.textContent = 'Selecciona y copia'; } });
+    wrapper.appendChild(button);
+  };
+  const render = (markdown) => {
+    content.replaceChildren(); nav.replaceChildren();
+    let section = null, list = null, code = null, inCode = false;
+    markdown.split(/\r?\n/).forEach((line) => {
+      if (line.startsWith('```')) {
+        if (!inCode) { const wrap = document.createElement('div'); wrap.className = 'code-block'; const pre = document.createElement('pre'); code = document.createElement('code'); pre.appendChild(code); addCopy(wrap, code); wrap.appendChild(pre); (section || content).appendChild(wrap); inCode = true; }
+        else inCode = false;
+        return;
+      }
+      if (inCode) { code.textContent += `${line}\n`; return; }
+      if (line.startsWith('# ')) { const header = document.createElement('header'); const kicker = document.createElement('p'); kicker.className = 'kicker'; kicker.textContent = `${guide[2]} · Hoja de trucos`; const h1 = document.createElement('h1'); h1.textContent = guide[1]; const lead = document.createElement('p'); lead.className = 'lead'; lead.textContent = 'Referencia breve, práctica y lista para consultar mientras construyes.'; header.append(kicker, h1, lead); content.appendChild(header); document.title = `${guide[1]} — CodeSheets`; return; }
+      if (line.startsWith('## ')) { const title = line.slice(3); section = document.createElement('section'); section.className = 'guide-section'; section.id = slug(title); const h2 = document.createElement('h2'); h2.textContent = title; section.appendChild(h2); content.appendChild(section); const link = document.createElement('a'); link.href = `#${section.id}`; link.textContent = title; nav.appendChild(link); list = null; return; }
+      if (line.startsWith('- ')) { if (!list) { list = document.createElement('ul'); (section || content).appendChild(list); } const item = document.createElement('li'); item.textContent = line.slice(2).replace(/`/g, ''); list.appendChild(item); return; }
+      if (line.trim()) { const p = document.createElement('p'); p.textContent = line.replace(/`/g, ''); (section || content).appendChild(p); }
+    });
+  };
+  if (!guide) { content.innerHTML = '<header><p class="kicker">Guía no encontrada</p><h1>Esta referencia no existe.</h1><p class="lead"><a href="./#guias">Volver al catálogo</a></p></header>'; return; }
+  fetch(`hojas-trucos/${guide[0]}`).then((response) => { if (!response.ok) throw new Error(); return response.text(); }).then(render).catch(() => { content.innerHTML = '<header><p class="kicker">Error de carga</p><h1>No pudimos abrir la guía.</h1><p class="lead"><a href="./#guias">Volver al catálogo</a></p></header>'; });
+})();
