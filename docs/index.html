@@ -2,61 +2,63 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Catálogo de hojas de trucos de programación en español">
-  <title>Programming Cheat Sheets</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="CodeSheets: hojas de trucos de programación en español, buscables y listas para usar.">
+  <meta name="theme-color" content="#0f766e">
+  <title>CodeSheets — Programación sin rodeos</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=cabinet-grotesk@600,700,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
-  <header class="hero">
-    <p class="eyebrow">Programming Cheat Sheets</p>
-    <h1>Consulta, aprende y practica programación</h1>
-    <p>Hojas de trucos en español, referencias rápidas y mini proyectos para reforzar tus habilidades.</p>
-    <label class="search" for="buscador">
-      <span>Buscar tecnología</span>
-      <input id="buscador" type="search" placeholder="Ej.: Python, Git, SQL..." autocomplete="off">
-    </label>
-  </header>
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+<header class="site-header">
+  <a class="brand" href="./" aria-label="CodeSheets, inicio"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="10"/><path d="m17 12-8 8 8 8M23 12l8 8-8 8"/></svg><span>CodeSheets</span></a>
+  <nav aria-label="Navegación principal"><a href="#guias">Guías</a><a href="#metodo">Método</a><a href="#tienda">Recursos</a></nav>
+  <div class="header-actions"><button class="icon-button" type="button" data-theme-toggle aria-label="Cambiar tema"><span aria-hidden="true">◐</span></button><button class="cart-trigger" type="button" data-cart-open aria-controls="carrito">Carrito <span data-cart-count>0</span></button></div>
+</header>
+<main id="contenido">
+  <section class="hero">
+    <div class="hero-copy"><p class="kicker">Referencia técnica en español</p><h1>Encuentra el comando.<br><em>Continúa creando.</em></h1><p class="hero-lead">Nueve hojas de trucos directas, accesibles y pensadas para resolver dudas mientras programas.</p><div class="hero-actions"><a class="button primary" href="#guias">Explorar guías</a><a class="button secondary" href="#tienda">Ver packs</a></div><ul class="trust-list" role="list"><li>Acceso gratuito</li><li>Ejemplos copiables</li><li>Diseño móvil</li></ul></div>
+    <div class="hero-code" aria-label="Ejemplo de código"><div class="code-top"><span>inicio.py</span><span class="status-dot">listo</span></div><pre><code><span class="c-muted"># Una referencia para seguir avanzando</span>
+<span class="c-key">def</span> <span class="c-fn">aprender</span>(tema):
+    practica = <span class="c-str">"constante"</span>
+    <span class="c-key">return</span> tema, practica
 
-  <main>
-    <section aria-labelledby="titulo-catalogo">
-      <div class="section-heading">
-        <h2 id="titulo-catalogo">Catálogo</h2>
-        <p id="resultado" aria-live="polite">9 tecnologías disponibles</p>
-      </div>
-      <div id="tarjetas" class="grid">
-        <article class="card" data-search="python programación funciones listas diccionarios">
-          <h3>Python</h3><p>Sintaxis, colecciones, funciones, archivos y errores.</p><a href="../python/cheat-sheet.md">Hoja completa</a><a href="../python/quick-reference.md">Referencia rápida</a>
-        </article>
-        <article class="card" data-search="javascript js dom eventos asincronía">
-          <h3>JavaScript</h3><p>DOM, arreglos, objetos y asincronía.</p><a href="../javascript/cheat-sheet.md">Hoja completa</a><a href="../projects/javascript/lista-tareas.html">Mini proyecto</a>
-        </article>
-        <article class="card" data-search="git github commit ramas remoto">
-          <h3>Git</h3><p>Commits, ramas, remotos y recuperación.</p><a href="../git/cheat-sheet.md">Hoja completa</a><a href="../git/quick-reference.md">Referencia rápida</a>
-        </article>
-        <article class="card" data-search="css flexbox grid responsive estilos">
-          <h3>CSS</h3><p>Diseño responsivo, Flexbox, Grid y animaciones.</p><a href="../css/cheat-sheet.md">Hoja completa</a><a href="../projects/html-css/tarjeta-perfil.html">Mini proyecto</a>
-        </article>
-        <article class="card" data-search="html semántica formularios accesibilidad">
-          <h3>HTML</h3><p>Estructura, formularios y accesibilidad.</p><a href="../html/cheat-sheet.md">Hoja completa</a><a href="../projects/html-css/tarjeta-perfil.html">Mini proyecto</a>
-        </article>
-        <article class="card" data-search="sql base datos select join consultas">
-          <h3>SQL</h3><p>Consultas, filtros, agregaciones y JOIN.</p><a href="../sql/cheat-sheet.md">Hoja completa</a>
-        </article>
-        <article class="card" data-search="bash powershell terminal consola comandos">
-          <h3>Bash y PowerShell</h3><p>Archivos, búsquedas, scripts y terminal.</p><a href="../bash-powershell/cheat-sheet.md">Hoja completa</a>
-        </article>
-        <article class="card" data-search="java clases objetos colecciones">
-          <h3>Java</h3><p>Clases, métodos, colecciones y excepciones.</p><a href="../java/cheat-sheet.md">Hoja completa</a>
-        </article>
-        <article class="card" data-search="typescript ts tipos interfaces generics">
-          <h3>TypeScript</h3><p>Tipos, interfaces, uniones y genéricos.</p><a href="../typescript/cheat-sheet.md">Hoja completa</a>
-        </article>
-      </div>
-      <p id="sin-resultados" class="empty" hidden>No se encontraron tecnologías con esa búsqueda.</p>
-    </section>
-  </main>
-  <footer><p>Creado por Johan Sebastian Franco Montenegro · Licencia MIT</p></footer>
-  <script src="app.js"></script>
-</body>
-</html>
+ruta = aprender(<span class="c-str">"Python"</span>)
+<span class="c-fn">print</span>(ruta)</code></pre><div class="code-foot"><span>9 tecnologías</span><span>ES</span></div></div>
+  </section>
+
+  <section class="catalog section" id="guias" aria-labelledby="guias-title">
+    <div class="section-intro"><div><p class="kicker">Biblioteca</p><h2 id="guias-title">Todo lo esencial, sin ruido.</h2></div><p>Busca por lenguaje o filtra por área. Cada guía incluye ejemplos prácticos y acciones para copiar código.</p></div>
+    <div class="catalog-tools"><label class="search-field" for="buscador"><span class="sr-only">Buscar guías</span><span aria-hidden="true">⌕</span><input id="buscador" type="search" placeholder="Buscar Python, DOM, consultas..." autocomplete="off"></label><div class="filters" aria-label="Filtrar guías"><button class="filter active" data-filter="todos" type="button">Todas</button><button class="filter" data-filter="web" type="button">Web</button><button class="filter" data-filter="datos" type="button">Datos</button><button class="filter" data-filter="herramientas" type="button">Herramientas</button></div></div>
+    <p class="result-count" data-result-count aria-live="polite">9 guías disponibles</p>
+    <div class="guide-grid" data-guide-grid>
+      <article class="guide-card featured" data-category="datos" data-search="python funciones listas diccionarios archivos paquetes"><div class="guide-index">01</div><div><span class="tag">Datos</span><h3>Python</h3><p>Sintaxis, colecciones, funciones, archivos y manejo de errores.</p><a class="card-link" href="guia.html?tema=python">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="web" data-search="javascript js dom eventos async arreglos objetos"><div class="guide-index">02</div><div><span class="tag">Web</span><h3>JavaScript</h3><p>DOM, arreglos, objetos, eventos y asincronía.</p><a class="card-link" href="guia.html?tema=javascript">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="web" data-search="html semantica formularios accesibilidad etiquetas"><div class="guide-index">03</div><div><span class="tag">Web</span><h3>HTML</h3><p>Estructura semántica, formularios y accesibilidad.</p><a class="card-link" href="guia.html?tema=html">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="web" data-search="css flexbox grid responsive estilos variables"><div class="guide-index">04</div><div><span class="tag">Web</span><h3>CSS</h3><p>Modelo de caja, Flexbox, Grid y diseño adaptable.</p><a class="card-link" href="guia.html?tema=css">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="herramientas" data-search="git github commit ramas remoto recuperar"><div class="guide-index">05</div><div><span class="tag">Herramientas</span><h3>Git</h3><p>Commits, ramas, remotos y recuperación segura.</p><a class="card-link" href="guia.html?tema=git">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="datos" data-search="sql base datos select join consultas transacciones"><div class="guide-index">06</div><div><span class="tag">Datos</span><h3>SQL</h3><p>Consultas, filtros, agregaciones, JOIN y transacciones.</p><a class="card-link" href="guia.html?tema=sql">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="web" data-search="typescript ts tipos interfaces genericos"><div class="guide-index">07</div><div><span class="tag">Web</span><h3>TypeScript</h3><p>Tipos, interfaces, uniones y genéricos.</p><a class="card-link" href="guia.html?tema=typescript">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card" data-category="herramientas" data-search="java clases objetos colecciones excepciones"><div class="guide-index">08</div><div><span class="tag">Backend</span><h3>Java</h3><p>Clases, métodos, colecciones y excepciones.</p><a class="card-link" href="guia.html?tema=java">Abrir guía <span>↗</span></a></div></article>
+      <article class="guide-card wide" data-category="herramientas" data-search="bash powershell terminal comandos scripts consola"><div class="guide-index">09</div><div><span class="tag">Herramientas</span><h3>Terminal</h3><p>Bash y PowerShell para navegar, automatizar y controlar procesos.</p><a class="card-link" href="guia.html?tema=terminal">Abrir guía <span>↗</span></a></div></article>
+    </div>
+    <div class="empty-state" data-empty-guides hidden><strong>No encontramos esa guía.</strong><p>Prueba otra palabra o restablece los filtros.</p><button class="button secondary" type="button" data-reset-filters>Ver todas</button></div>
+  </section>
+
+  <section class="method section" id="metodo" aria-labelledby="metodo-title"><div class="method-copy"><p class="kicker">Diseñadas para el flujo real</p><h2 id="metodo-title">Menos pestañas. Más progreso.</h2><p>Cada hoja prioriza las operaciones que más usas: sintaxis breve, ejemplos ejecutables y buenas prácticas en contexto.</p><a class="text-link" href="#guias">Elegir una tecnología →</a></div><ol class="method-list"><li><span>01</span><div><h3>Encuentra</h3><p>Busca por lenguaje, comando o concepto.</p></div></li><li><span>02</span><div><h3>Copia</h3><p>Lleva el fragmento directamente a tu proyecto.</p></div></li><li><span>03</span><div><h3>Adapta</h3><p>Entiende el patrón y úsalo con tus datos.</p></div></li></ol></section>
+
+  <section class="store section" id="tienda" aria-labelledby="tienda-title"><div class="section-intro"><div><p class="kicker">Tienda de recursos</p><h2 id="tienda-title">Profundiza cuando estés listo.</h2></div><p>Recursos digitales para ampliar la biblioteca gratuita con rutas, ejercicios y material descargable.</p></div><div class="product-grid">
+    <article class="product-card"><span class="product-no">01</span><p class="tag">Guía avanzada</p><h3>Python de principio a producción</h3><p>Patrones, pruebas, automatización y estructura de proyectos.</p><div class="product-bottom"><strong>COP 15.000</strong><button class="button primary add-to-cart" type="button" data-id="guia-python" data-nombre="Guía avanzada de Python" data-precio="15000">Agregar</button></div></article>
+    <article class="product-card"><span class="product-no">02</span><p class="tag">Pack web</p><h3>HTML, CSS y JavaScript</h3><p>Tres referencias ampliadas y un proyecto integrador.</p><div class="product-bottom"><strong>COP 20.000</strong><button class="button primary add-to-cart" type="button" data-id="pack-web" data-nombre="Pack HTML, CSS y JavaScript" data-precio="20000">Agregar</button></div></article>
+    <article class="product-card"><span class="product-no">03</span><p class="tag">Pack terminal</p><h3>Git, Bash y PowerShell</h3><p>Flujos reproducibles para terminal y control de versiones.</p><div class="product-bottom"><strong>COP 12.000</strong><button class="button primary add-to-cart" type="button" data-id="pack-terminal" data-nombre="Pack Git, Bash y PowerShell" data-precio="12000">Agregar</button></div></article>
+    <article class="product-card product-dark"><span class="product-no">04</span><p class="tag">Mejor valor</p><h3>Colección completa</h3><p>Todas las hojas premium, ejercicios y futuras actualizaciones.</p><div class="product-bottom"><strong>COP 35.000</strong><button class="button light add-to-cart" type="button" data-id="pack-completo" data-nombre="Colección completa de Cheat Sheets" data-precio="35000">Agregar</button></div></article>
+  </div><p class="store-note">Carrito demostrativo. La compra no procesa pagos reales.</p></section>
+</main>
+<footer class="site-footer"><div class="brand footer-brand"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="10"/><path d="m17 12-8 8 8 8M23 12l8 8-8 8"/></svg><span>CodeSheets</span></div><p>Referencias rápidas para construir con confianza.</p><p>© 2026 Johan Sebastian Franco Montenegro · MIT</p></footer>
+<div class="cart-backdrop" data-cart-backdrop hidden></div><aside class="cart-panel" id="carrito" aria-labelledby="cart-title" aria-hidden="true"><div class="cart-head"><div><p class="kicker">Tu selección</p><h2 id="cart-title">Carrito</h2></div><button class="icon-button" type="button" data-cart-close aria-label="Cerrar carrito">×</button></div><div class="cart-items" data-cart-items></div><div class="cart-empty" data-cart-empty><strong>Tu carrito está esperando.</strong><p>Agrega un recurso para verlo aquí.</p></div><div class="cart-footer"><div class="cart-total"><span>Total</span><strong data-cart-total>COP 0</strong></div><button class="button secondary full" type="button" data-cart-clear>Vaciar carrito</button></div></aside>
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+</body></html>
