@@ -1,107 +1,24 @@
-const lenguajes = [
-  { id: 'python', nombre: 'Python', precio: 0, archivo: 'docs/hojas-trucos/python.md', descripcion: 'Sintaxis, colecciones, funciones y comandos básicos para empezar con Python.', icono: '🐍' },
-  { id: 'javascript', nombre: 'JavaScript', precio: 0, archivo: 'docs/hojas-trucos/javascript.md', descripcion: 'DOM, eventos, arreglos, funciones y herramientas clave de JavaScript.', icono: '🟨' },
-  { id: 'git', nombre: 'Git', precio: 0, archivo: 'docs/hojas-trucos/git.md', descripcion: 'Flujo de trabajo, ramas, commits y colaboración con Git.', icono: '🔀' },
-  { id: 'css', nombre: 'CSS', precio: 0, archivo: 'docs/hojas-trucos/css.md', descripcion: 'Selectores, Flexbox, Grid y diseño adaptable.', icono: '🎨' },
-  { id: 'html', nombre: 'HTML', precio: 0, archivo: 'docs/hojas-trucos/html.md', descripcion: 'Estructura semántica, formularios y etiquetas fundamentales.', icono: '📄' },
-  { id: 'java', nombre: 'Java', precio: 0, archivo: 'docs/hojas-trucos/java.md', descripcion: 'Clases, objetos, colecciones y estructura de programas Java.', icono: '☕' },
-  { id: 'sql', nombre: 'SQL', precio: 0, archivo: 'docs/hojas-trucos/sql.md', descripcion: 'Consultas, filtros, joins y operaciones con bases de datos.', icono: '🗃️' },
-  { id: 'typescript', nombre: 'TypeScript', precio: 0, archivo: 'docs/hojas-trucos/typescript.md', descripcion: 'Tipos, interfaces y desarrollo JavaScript más seguro.', icono: '🔷' },
-  { id: 'bash-powershell', nombre: 'Bash y PowerShell', precio: 0, archivo: 'docs/hojas-trucos/bash-powershell.md', descripcion: 'Comandos de terminal, archivos, procesos y automatización.', icono: '⌨️' }
-];
-
-const listaLenguajes = document.getElementById('lista-lenguajes');
-const nombreSeleccionado = document.getElementById('lenguaje-nombre');
-const descripcionSeleccionada = document.getElementById('lenguaje-descripcion');
-const precioSeleccionado = document.getElementById('lenguaje-precio');
-const botonAgregar = document.getElementById('agregar-carrito');
-const enlaceDescarga = document.getElementById('descargar-hoja');
-const listaCarrito = document.getElementById('lista-carrito');
-const totalCarrito = document.getElementById('total-carrito');
-const contadorCarrito = document.getElementById('contador-carrito');
-const carritoVacio = document.getElementById('carrito-vacio');
-const botonVaciar = document.getElementById('vaciar-carrito');
-
-let seleccionado = null;
-let carrito = [];
-const formatoCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
-
-function renderizarLenguajes() {
-  listaLenguajes.innerHTML = '';
-  lenguajes.forEach((lenguaje) => {
-    const tarjeta = document.createElement('article');
-    tarjeta.className = 'language-card';
-    tarjeta.innerHTML = `
-      <span class="language-icon" aria-hidden="true">${lenguaje.icono}</span>
-      <h3>${lenguaje.nombre}</h3>
-      <p>${lenguaje.descripcion}</p>
-      <button type="button" class="button button-secondary">Seleccionar</button>
-    `;
-    tarjeta.querySelector('button').addEventListener('click', () => seleccionarLenguaje(lenguaje.id));
-    listaLenguajes.appendChild(tarjeta);
-  });
-}
-
-function seleccionarLenguaje(id) {
-  seleccionado = lenguajes.find((lenguaje) => lenguaje.id === id);
-  nombreSeleccionado.textContent = seleccionado.nombre;
-  descripcionSeleccionada.textContent = seleccionado.descripcion;
-  precioSeleccionado.textContent = seleccionado.precio === 0 ? 'Gratis' : formatoCOP.format(seleccionado.precio);
-  botonAgregar.disabled = false;
-  enlaceDescarga.href = seleccionado.archivo;
-  enlaceDescarga.download = `hoja-trucos-${seleccionado.id}.md`;
-  enlaceDescarga.classList.remove('disabled');
-  enlaceDescarga.setAttribute('aria-disabled', 'false');
-  document.getElementById('detalle').scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function agregarAlCarrito() {
-  if (!seleccionado) return;
-  const item = { ...seleccionado, uid: `${seleccionado.id}-${Date.now()}` };
-  carrito.push(item);
-  renderizarCarrito();
-}
-
-function eliminarDelCarrito(uid) {
-  carrito = carrito.filter((item) => item.uid !== uid);
-  renderizarCarrito();
-}
-
-function renderizarCarrito() {
-  listaCarrito.innerHTML = '';
-  let total = 0;
-  carrito.forEach((item) => {
-    total += item.precio;
-    const fila = document.createElement('li');
-    fila.className = 'cart-item';
-    const texto = document.createElement('div');
-    const titulo = document.createElement('strong');
-    const detalle = document.createElement('span');
-    titulo.textContent = item.nombre;
-    detalle.textContent = `${item.precio === 0 ? 'Gratis' : formatoCOP.format(item.precio)} · descarga incluida`;
-    texto.append(titulo, detalle);
-    const eliminar = document.createElement('button');
-    eliminar.type = 'button';
-    eliminar.className = 'remove-button';
-    eliminar.textContent = 'Eliminar';
-    eliminar.addEventListener('click', () => eliminarDelCarrito(item.uid));
-    fila.append(texto, eliminar);
-    listaCarrito.appendChild(fila);
-  });
-  totalCarrito.textContent = formatoCOP.format(total);
-  contadorCarrito.textContent = carrito.length;
-  carritoVacio.hidden = carrito.length > 0;
-}
-
-botonAgregar.addEventListener('click', agregarAlCarrito);
-botonVaciar.addEventListener('click', () => {
-  carrito = [];
-  renderizarCarrito();
-});
-
-enlaceDescarga.addEventListener('click', (evento) => {
-  if (!seleccionado) evento.preventDefault();
-});
-
-renderizarLenguajes();
-renderizarCarrito();
+const guides={
+  'python-cheat-sheet':{title:'Python · Cheat Sheet',description:'Sintaxis, estructuras y conceptos esenciales de Python.',file:'docs/hojas-trucos/python.md',source:'python/cheat-sheet.md'},
+  'python-quick-reference':{title:'Python · Quick Reference',description:'Referencia rápida para consultar comandos de Python.',file:'python/quick-reference.md',source:'python/quick-reference.md'},
+  'javascript-cheat-sheet':{title:'JavaScript · Cheat Sheet',description:'Fundamentos y sintaxis útil de JavaScript.',file:'docs/hojas-trucos/javascript.md',source:'javascript/cheat-sheet.md'},
+  'html-cheat-sheet':{title:'HTML · Cheat Sheet',description:'Etiquetas y estructura para crear páginas web.',file:'docs/hojas-trucos/html.md',source:'html/cheat-sheet.md'},
+  'bash-powershell-cheat-sheet':{title:'Bash & PowerShell · Cheat Sheet',description:'Comandos de terminal y automatización.',file:'docs/hojas-trucos/bash-powershell.md',source:'bash-powershell/cheat-sheet.md'}
+};
+const homeView=document.querySelector('#home-view');const documentView=document.querySelector('#document-view');const emptyView=document.querySelector('#empty-view');const markdownContent=document.querySelector('#markdown-content');const tocLinks=document.querySelector('#toc-links');const searchInput=document.querySelector('#search-input');const searchStatus=document.querySelector('#search-status');const sidebar=document.querySelector('#sidebar');const overlay=document.querySelector('#overlay');
+function escapeHtml(value){return value.replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[char]))}
+function slugify(value){return value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}
+function hideViews(){homeView.hidden=true;documentView.hidden=true;emptyView.hidden=true}
+function buildToc(guideId){tocLinks.innerHTML='';markdownContent.querySelectorAll('h2,h3').forEach(heading=>{const id=`${guideId}--${slugify(heading.textContent)}`;heading.id=id;const link=document.createElement('a');link.href=`#${guideId}/${slugify(heading.textContent)}`;link.textContent=heading.textContent;link.className=heading.tagName==='H2'?'toc-h2':'toc-h3';tocLinks.append(link)})}
+function addCopyButtons(){markdownContent.querySelectorAll('pre').forEach(pre=>{const wrapper=document.createElement('div');wrapper.className='code-block';pre.parentNode.insertBefore(wrapper,pre);wrapper.append(pre);const button=document.createElement('button');button.className='copy-code';button.type='button';button.textContent='Copiar';button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText);button.textContent='¡Copiado!'}catch{button.textContent='No disponible'}setTimeout(()=>button.textContent='Copiar',1400)});wrapper.append(button)})}
+function highlightCode(){markdownContent.querySelectorAll('pre code').forEach(block=>window.hljs?.highlightElement(block))}
+async function renderGuide(guideId){const guide=guides[guideId];hideViews();if(!guide){emptyView.hidden=false;return}documentView.hidden=false;document.querySelector('#breadcrumb').textContent=guide.title;document.querySelector('#document-title').textContent=guide.title;document.querySelector('#document-description').textContent=guide.description;document.querySelector('#source-link').href=`https://github.com/johanfranco8-sketch/programming-cheat-sheets.github.io/blob/main/${guide.source}`;markdownContent.innerHTML='<p class="loading">Cargando guía…</p>';try{const response=await fetch(guide.file);if(!response.ok)throw new Error('No disponible');const text=await response.text();markdownContent.innerHTML=window.marked?window.marked.parse(text):`<pre>${escapeHtml(text)}</pre>`;highlightCode();addCopyButtons();buildToc(guideId);applySearch(searchInput.value)}catch{markdownContent.innerHTML='<p class="error">No fue posible cargar esta guía.</p>';tocLinks.innerHTML=''}}
+function applySearch(query){const term=query.trim().toLowerCase();const blocks=[...markdownContent.querySelectorAll('p,li,h2,h3,pre,table')];let matches=0;blocks.forEach(block=>{const found=!term||block.textContent.toLowerCase().includes(term);block.classList.toggle('search-hidden',!found);if(term&&found)matches++});searchStatus.textContent=term?`${matches} coincidencia${matches===1?'':'s'} en la guía actual.`:''}
+function route(){const route=location.hash.slice(1);document.querySelectorAll('.guide-link').forEach(link=>link.classList.toggle('active',link.dataset.guide===route));if(!route||route==='home'||route==='tienda'){hideViews();homeView.hidden=false;if(route==='tienda')document.querySelector('#tienda')?.scrollIntoView({behavior:'smooth'});return}renderGuide(route)}
+window.addEventListener('hashchange',route);searchInput?.addEventListener('input',()=>applySearch(searchInput.value));document.querySelector('#theme-toggle')?.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem('cheats-theme',next)});const savedTheme=localStorage.getItem('cheats-theme');if(savedTheme)document.documentElement.dataset.theme=savedTheme;document.querySelector('#menu-button')?.addEventListener('click',()=>{sidebar.classList.toggle('open');overlay.hidden=!sidebar.classList.contains('open')});overlay?.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.hidden=true});
+const cartKey='cheat-sheets-cart';let cart=JSON.parse(localStorage.getItem(cartKey)||'[]');const cartItems=document.querySelector('#cart-items');const cartTotal=document.querySelector('#cart-total');const cartCount=document.querySelector('#cart-count');const cartItemsLabel=document.querySelector('#cart-items-label');const clearCart=document.querySelector('#clear-cart');const money=value=>new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(value);
+function saveCart(){localStorage.setItem(cartKey,JSON.stringify(cart))}
+function renderCart(){if(!cartItems)return;cartItems.innerHTML='';const quantity=cart.reduce((sum,item)=>sum+item.quantity,0);const total=cart.reduce((sum,item)=>sum+item.price*item.quantity,0);cartCount.textContent=quantity;cartItemsLabel.textContent=`${quantity} artículo${quantity===1?'':'s'}`;cartTotal.textContent=money(total);clearCart.disabled=cart.length===0;if(!cart.length){const empty=document.createElement('p');empty.className='cart-empty';empty.textContent='Tu carrito está vacío. Agrega un recurso para comenzar.';cartItems.appendChild(empty);return}cart.forEach(item=>{const row=document.createElement('div');row.className='cart-item';const info=document.createElement('div');const name=document.createElement('strong');name.textContent=item.name;const details=document.createElement('span');details.textContent=`${item.quantity} × ${money(item.price)}`;info.append(name,details);const actions=document.createElement('div');const subtotal=document.createElement('span');subtotal.textContent=money(item.price*item.quantity);const remove=document.createElement('button');remove.type='button';remove.className='remove-from-cart';remove.dataset.id=item.id;remove.textContent='Eliminar';actions.append(subtotal,remove);row.append(info,actions);cartItems.appendChild(row)})}
+function addToCart(product){const existing=cart.find(item=>item.id===product.id);if(existing)existing.quantity+=1;else cart.push({...product,quantity:1});saveCart();renderCart()}
+document.querySelectorAll('.add-to-cart').forEach(button=>button.addEventListener('click',()=>addToCart({id:button.dataset.id,name:button.dataset.nombre,price:Number(button.dataset.precio)})));
+cartItems?.addEventListener('click',event=>{const button=event.target.closest('.remove-from-cart');if(!button)return;cart=cart.filter(item=>item.id!==button.dataset.id);saveCart();renderCart()});clearCart?.addEventListener('click',()=>{cart=[];saveCart();renderCart()});renderCart();route();
