@@ -24,15 +24,7 @@ const normalizeText = (value = '') => value
   .replace(/\s+/g, ' ')
   .trim();
 
-const getCardText = (card) => [
-  card.dataset.title,
-  card.dataset.description,
-  card.dataset.category,
-  card.dataset.tags,
-  card.dataset.topics,
-  card.dataset.search,
-  card.dataset.guideContent
-].filter(Boolean).join(' ');
+
 
 const setSearchStatus = (message) => {
   if (searchStatus) searchStatus.textContent = message;
@@ -44,8 +36,14 @@ const filterGuides = () => {
   let visible = 0;
 
   cards.forEach((card) => {
-    const searchableText = normalizeText(getCardText(card));
-    const matchesText = !terms.length || terms.every((term) => searchableText.includes(term));
+    const guideText = normalizeText(card.dataset.guideContent || '');
+
+// Si el campo está vacío, la guía aún no se indexó o falló su carga.
+// Mientras exista una búsqueda activa, se oculta para no generar falsos positivos.
+const matchesText = !terms.length || (
+  Boolean(guideText) &&
+  terms.every((term) => guideText.includes(term))
+);
     const matchesCategory = category === 'todos' || normalizeText(card.dataset.category) === category;
     card.hidden = !(matchesText && matchesCategory);
     if (!card.hidden) visible += 1;
